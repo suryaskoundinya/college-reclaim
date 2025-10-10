@@ -1,6 +1,13 @@
 # College Reclaim - Lost & Found Web Application
 
-A comprehensive Next.js application for managing lost and found items in college environments.
+A comprehensive Next.js application for managing lost and found items in college environments with **cloud database integration** for persistent, multi-device data access.
+
+## 📖 Documentation
+
+- 🚀 [Quick Start Guide](./QUICKSTART-DATABASE.md) - Get started in 5 minutes
+- 🌐 [Cloud Database Setup](./CLOUD-DATABASE-SETUP.md) - Detailed integration guide
+- 💾 [Database Integration Status](./DATABASE-INTEGRATION.md) - Implementation details
+- 📚 [Production Guide](./README-PRODUCTION.md) - Full production documentation
 
 ## 🚀 Features
 
