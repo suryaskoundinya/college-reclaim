@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loading } from "@/components/ui/loading"
+import { BackButton } from "@/components/ui/back-button"
 import { ArrowLeft, Camera, Upload, X, CheckCircle, AlertCircle, Heart, Star, MapPin, Calendar, Clock, Phone, Mail, ChevronRight, Lightbulb } from "lucide-react"
 import { toast } from "sonner"
 
@@ -214,11 +214,8 @@ export default function ReportFound() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <Link href="/" className="inline-flex items-center text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 mb-6 transition-colors duration-200">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Link>
-
+            <BackButton showHomeButton showBackButton className="mb-6" />
+            
             <div className="text-center mb-8">
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -231,7 +228,7 @@ export default function ReportFound() {
               <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
                 Report Found Item
               </h1>
-              <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">Help someone reunite with their lost belongings</p>
+              <p className="text-gray-600 dark:text-gray-400 transition-colors duration-300">Help someone reunite with their lost belongings</p>
             </div>
           </motion.div>
 

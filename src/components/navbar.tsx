@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, Plus, Bell, User, LogOut, Settings, Sparkles, Sun, Moon } from "lucide-react"
+import { Search, Plus, Bell, User, LogOut, Settings, Sparkles, Sun, Moon, BookOpen, CalendarDays } from "lucide-react"
 import { useTheme } from "@/components/providers"
 
 export function Navbar() {
@@ -58,6 +58,30 @@ export function Navbar() {
                 <Button variant="ghost" size="sm" className="hover:bg-violet-50 dark:hover:bg-gray-800 hover:text-violet-700 dark:hover:text-violet-400 transition-all duration-200 dark:text-gray-300">
                   <Search className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Search</span>
+                </Button>
+              </motion.div>
+            </Link>
+
+            <Link href="/books" prefetch={true}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button variant="ghost" size="sm" className="hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-200 dark:text-gray-300">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Books</span>
+                </Button>
+              </motion.div>
+            </Link>
+
+            <Link href="/events" prefetch={true}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button variant="ghost" size="sm" className="hover:bg-purple-50 dark:hover:bg-gray-800 hover:text-purple-700 dark:hover:text-purple-400 transition-all duration-200 dark:text-gray-300">
+                  <CalendarDays className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Events</span>
                 </Button>
               </motion.div>
             </Link>

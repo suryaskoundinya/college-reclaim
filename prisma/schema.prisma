@@ -56,6 +56,10 @@ model User {
   foundItems   FoundItem[]
   notifications Notification[]
   matches      Match[]
+  books        Book[]
+  bookRequests BookRequest[]
+  events       Event[]
+  eventInterests EventInterest[]
 
   @@map("users")
 }
@@ -177,4 +181,94 @@ enum NotificationType {
   WARNING
   ERROR
   MATCH_FOUND
+  BOOK_REQUEST
+  EVENT_REMINDER
+}
+
+model Book {
+  id           String           @id @default(cuid())
+  title        String
+  author       String
+  description  String
+  condition    BookCondition
+  priceOrRent  Float
+  type         BookType         @default(RENT)
+  imageUrl     String?
+  available    Boolean          @default(true)
+  ownerUserId  String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  owner        User             @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  requests     BookRequest[]
+
+  @@map("books")
+}
+
+model BookRequest {
+  id        String           @id @default(cuid())
+  bookId    String
+  userId    String
+  message   String?
+  status    RequestStatus    @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  book      Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, userId])
+  @@map("book_requests")
+}
+
+model Event {
+  id           String      @id @default(cuid())
+  title        String
+  description  String
+  date         DateTime
+  time         String
+  venue        String
+  clubOrDept   String
+  postedByUserId String
+  contactInfo  String?
+  imageUrl     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  postedBy     User        @relation(fields: [postedByUserId], references: [id], onDelete: Cascade)
+  interested   EventInterest[]
+
+  @@map("events")
+}
+
+model EventInterest {
+  id        String   @id @default(cuid())
+  eventId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@map("event_interests")
+}
+
+enum BookCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  POOR
+}
+
+enum BookType {
+  RENT
+  SELL
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

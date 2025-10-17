@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loading } from "@/components/ui/loading"
 import { Navbar } from "@/components/navbar"
+import { BackButton } from "@/components/ui/back-button"
 import { ArrowLeft, Search as SearchIcon, Filter, MapPin, Calendar, User, Heart, Eye, ExternalLink, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
@@ -199,21 +200,18 @@ export default function Search() {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header */}
-        <motion.div 
-          className="mb-8"
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Link href="/" className="inline-flex items-center text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 mb-6 transition-colors duration-200">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Link>
+          <BackButton showHomeButton showBackButton className="mb-6" />
+          
           <div className="text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent mb-4">
               Search Lost & Found Items
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto md:mx-0">
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto md:mx-0">
               Find your lost items or browse found items to help others reconnect with their belongings
             </p>
           </div>

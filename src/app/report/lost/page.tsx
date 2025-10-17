@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef } from "react"
-import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Loading } from "@/components/ui/loading"
 import { Navbar } from "@/components/navbar"
+import { BackButton } from "@/components/ui/back-button"
 import { ArrowLeft, Upload, Camera, MapPin, Clock, AlertCircle, CheckCircle, Trash2, Eye, EyeOff, DollarSign } from "lucide-react"
 import { toast } from "sonner"
 
@@ -167,10 +167,7 @@ export default function ReportLost() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Link href="/" className="inline-flex items-center text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 mb-6 transition-colors duration-200">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Link>
+          <BackButton showHomeButton showBackButton className="mb-6" />
           
           <div className="text-center mb-8">
             <motion.div
@@ -184,7 +181,7 @@ export default function ReportLost() {
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-4">
               Report a Lost Item
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto transition-colors duration-300">
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto transition-colors duration-300">
               Provide detailed information to help our community identify and return your lost item
             </p>
           </div>

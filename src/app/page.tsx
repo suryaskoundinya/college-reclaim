@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Navbar } from "@/components/navbar"
-import { ArrowRight, Sparkles, Users, TrendingUp, Shield, Trophy } from "lucide-react"
+import { ArrowRight, Sparkles, Users, TrendingUp, Shield, Trophy, BookOpen, CalendarDays } from "lucide-react"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
@@ -229,6 +229,101 @@ export default function Home() {
           </motion.div>
         </motion.section>
 
+        {/* New Modules Section */}
+        <motion.section 
+          className="mt-16 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 border border-white/20 dark:border-gray-700/20 transition-colors duration-300"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          aria-labelledby="new-modules-heading"
+        >
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            <h2 id="new-modules-heading" className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent transition-colors duration-300">Campus Community</h2>
+            <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm md:text-base transition-colors duration-300">Explore books and events on campus</p>
+          </motion.div>
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            variants={stagger}
+            initial="initial"
+            animate="animate"
+          >
+            <motion.div variants={fadeInUp}>
+              <Link href="/books" prefetch={true} className="group">
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <Card className="hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-blue-100 hover:border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 overflow-hidden relative h-full">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <CardContent className="p-8 text-center relative z-10">
+                      <motion.div 
+                        className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg group-hover:shadow-xl transition-all duration-300 mb-4"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <BookOpen className="text-white w-8 h-8" />
+                      </motion.div>
+                      <h3 className="font-bold text-xl text-blue-700 group-hover:text-blue-800 mb-2">Book Marketplace</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300 mb-4">
+                        Buy, sell, or rent textbooks from fellow students. Find affordable study materials and declutter your bookshelf.
+                      </p>
+                      <div className="flex flex-wrap gap-2 justify-center mb-4">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Textbooks</span>
+                        <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full">Rent/Buy</span>
+                        <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Student-to-Student</span>
+                      </div>
+                      <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <ArrowRight className="mx-auto h-5 w-5 text-blue-600" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Link>
+            </motion.div>
+            
+            <motion.div variants={fadeInUp}>
+              <Link href="/events" prefetch={true} className="group">
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
+                  <Card className="hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-purple-100 hover:border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 overflow-hidden relative h-full">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <CardContent className="p-8 text-center relative z-10">
+                      <motion.div 
+                        className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg group-hover:shadow-xl transition-all duration-300 mb-4"
+                        whileHover={{ scale: 1.1, rotate: -5 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <CalendarDays className="text-white w-8 h-8" />
+                      </motion.div>
+                      <h3 className="font-bold text-xl text-purple-700 group-hover:text-purple-800 mb-2">Campus Events</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300 mb-4">
+                        Discover exciting events, workshops, and activities happening around campus. Join clubs and build connections.
+                      </p>
+                      <div className="flex flex-wrap gap-2 justify-center mb-4">
+                        <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Workshops</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded-full">Club Events</span>
+                        <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full">Networking</span>
+                      </div>
+                      <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <ArrowRight className="mx-auto h-5 w-5 text-purple-600" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.section>
+
         {/* Stats Section */}
         <motion.div 
           className="mt-20"
@@ -391,6 +486,8 @@ export default function Home() {
                 <div><Link href="/report/lost" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">Report Lost Item</Link></div>
                 <div><Link href="/report/found" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">Report Found Item</Link></div>
                 <div><Link href="/search" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">Search Items</Link></div>
+                <div><Link href="/books" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">Books Marketplace</Link></div>
+                <div><Link href="/events" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">Campus Events</Link></div>
                 <div><Link href="/auth/signup" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors duration-200">Join Community</Link></div>
               </div>
             </motion.div>
