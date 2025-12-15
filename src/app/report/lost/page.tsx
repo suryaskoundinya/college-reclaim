@@ -17,14 +17,13 @@ import { toast } from "sonner"
 
 const categories = [
   { value: "ELECTRONICS", label: "Electronics", icon: "📱" },
-  { value: "BOOKS", label: "Books & Notebooks", icon: "📚" },
+  { value: "BOOK", label: "Books & Notebooks", icon: "📚" },
   { value: "ID_CARD", label: "ID Cards & Documents", icon: "🆔" },
   { value: "ACCESSORIES", label: "Accessories & Jewelry", icon: "💍" },
   { value: "CLOTHING", label: "Clothing & Shoes", icon: "👕" },
   { value: "KEYS", label: "Keys & Keychains", icon: "🔑" },
   { value: "BAGS", label: "Bags & Backpacks", icon: "🎒" },
   { value: "SPORTS", label: "Sports Equipment", icon: "⚽" },
-  { value: "STATIONERY", label: "Stationery & Supplies", icon: "✏️" },
   { value: "OTHER", label: "Other Items", icon: "📦" }
 ]
 
@@ -97,14 +96,35 @@ export default function ReportLost() {
     setIsSubmitting(true)
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Combine date and time
+      const dateTime = formData.dateLost + (formData.timeLost ? 'T' + formData.timeLost : 'T00:00:00') + 'Z'
+      
+      const response = await fetch('/api/lost-items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          location: formData.specificLocation || formData.location,
+          dateLost: dateTime,
+          imageUrl: uploadedFiles.length > 0 ? URL.createObjectURL(uploadedFiles[0]) : undefined,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to report item')
+      }
       
       toast.success("Lost item reported successfully! We'll notify you if we find any matches.", {
         duration: 5000,
         action: {
           label: "View Report",
-          onClick: () => console.log("View report")
+          onClick: () => window.location.href = "/search"
         }
       })
       
@@ -129,7 +149,7 @@ export default function ReportLost() {
       setStep(1)
       
     } catch (error) {
-      toast.error("Failed to report item. Please try again.")
+      toast.error(error instanceof Error ? error.message : "Failed to report item. Please try again.")
     } finally {
       setIsSubmitting(false)
     }

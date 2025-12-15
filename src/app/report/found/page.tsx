@@ -14,9 +14,15 @@ import { ArrowLeft, Camera, Upload, X, CheckCircle, AlertCircle, Heart, Star, Ma
 import { toast } from "sonner"
 
 const categories = [
-  "Electronics", "Clothing & Accessories", "Books & Stationery", 
-  "Jewelry & Valuables", "Sports Equipment", "Personal Items",
-  "Bags & Luggage", "Keys & Cards", "Documents", "Other"
+  { value: "ELECTRONICS", label: "Electronics" },
+  { value: "BOOK", label: "Books & Stationery" },
+  { value: "ID_CARD", label: "ID Cards & Documents" },
+  { value: "ACCESSORIES", label: "Accessories & Jewelry" },
+  { value: "CLOTHING", label: "Clothing & Shoes" },
+  { value: "KEYS", label: "Keys & Keychains" },
+  { value: "BAGS", label: "Bags & Backpacks" },
+  { value: "SPORTS", label: "Sports Equipment" },
+  { value: "OTHER", label: "Other Items" }
 ]
 
 const locations = [
@@ -146,11 +152,37 @@ export default function ReportFound() {
     setIsLoading(true)
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Combine date and time
+      const dateTime = formData.foundDate + (formData.foundTime ? 'T' + formData.foundTime : 'T00:00:00') + 'Z'
+      
+      const response = await fetch('/api/found-items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.itemName,
+          description: formData.description + (formData.additionalNotes ? '\n\n' + formData.additionalNotes : ''),
+          category: formData.category,
+          location: formData.customLocation || formData.foundLocation,
+          dateFound: dateTime,
+          handedToAdmin: false,
+          imageUrl: imagePreview.length > 0 ? imagePreview[0] : undefined,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to report found item')
+      }
       
       toast.success("Found item reported successfully! We'll notify you when someone claims it.", {
         duration: 5000,
+        action: {
+          label: "View Items",
+          onClick: () => window.location.href = "/search"
+        }
       })
       
       // Reset form
@@ -173,7 +205,7 @@ export default function ReportFound() {
       setCurrentStep("details")
       
     } catch (error) {
-      toast.error("Failed to report found item. Please try again.")
+      toast.error(error instanceof Error ? error.message : "Failed to report found item. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -314,8 +346,8 @@ export default function ReportFound() {
                             </SelectTrigger>
                             <SelectContent>
                               {categories.map((category) => (
-                                <SelectItem key={category} value={category}>
-                                  {category}
+                                <SelectItem key={category.value} value={category.value}>
+                                  {category.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>

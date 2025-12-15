@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { signIn } from "next-auth/react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -58,6 +59,14 @@ export default function SignUp() {
       newErrors.studentId = "Student ID must be at least 5 characters"
     }
     
+    if (!formData.department) {
+      newErrors.department = "Please select your department"
+    }
+    
+    if (!formData.year) {
+      newErrors.year = "Please select your year"
+    }
+    
     if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters"
     }
@@ -85,27 +94,48 @@ export default function SignUp() {
     setIsLoading(true)
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          password: formData.password,
+          college: formData.department + ' - ' + formData.year,
+          phoneNumber: formData.studentId,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed')
+      }
       
-      toast.success("Account created successfully! Please check your email for verification.", {
+      toast.success("Account created successfully! Redirecting to sign in...", {
         duration: 5000,
       })
       
-      // Simulate redirect
+      // Redirect to sign in
       setTimeout(() => {
         window.location.href = "/auth/signin"
       }, 1500)
       
     } catch (error) {
-      toast.error("Registration failed. Please try again.")
+      toast.error(error instanceof Error ? error.message : "Registration failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleSocialSignUp = (provider: string) => {
-    toast.info(`${provider} signup will be implemented with NextAuth.js`)
+  const handleSocialSignUp = async (provider: string) => {
+    try {
+      await signIn(provider.toLowerCase(), { callbackUrl: '/' })
+    } catch (error) {
+      toast.error(`Failed to sign up with ${provider}`)
+    }
   }
 
   const getPasswordStrength = () => {
