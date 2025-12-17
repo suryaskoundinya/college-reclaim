@@ -85,6 +85,8 @@ export default function Search() {
       date: new Date(item.dateLost).toISOString().split('T')[0],
       time: new Date(item.dateLost).toTimeString().split(' ')[0].substring(0, 5),
       reporter: item.user?.name || 'Anonymous',
+      contactEmail: item.user?.email || null,
+      contactPhone: item.user?.phoneNumber || null,
       status: item.status,
       views: 0,
       contactAttempts: 0,
@@ -101,6 +103,8 @@ export default function Search() {
       date: new Date(item.dateFound).toISOString().split('T')[0],
       time: new Date(item.dateFound).toTimeString().split(' ')[0].substring(0, 5),
       reporter: item.user?.name || 'Anonymous',
+      contactEmail: item.user?.email || null,
+      contactPhone: item.user?.phoneNumber || null,
       status: item.status,
       views: 0,
       contactAttempts: 0,
@@ -406,28 +410,29 @@ export default function Search() {
                           </div>
                         </div>
                         
-                        <div className="flex gap-2">
-                          <Button 
-                            onClick={() => handleContact(item)}
-                            className={`flex-1 ${
-                              item.type === 'lost' 
-                                ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700' 
-                                : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
-                            } text-white font-medium`}
-                            disabled={item.status === 'RESOLVED'}
-                          >
-                            {item.status === 'RESOLVED' ? '✅ Resolved' : (item.type === 'lost' ? 'I Found This!' : 'This Is Mine!')}
-                            <ExternalLink className="h-3 w-3 ml-1" />
-                          </Button>
-                          
-                          <Button 
-                            variant="outline" 
-                            size="icon"
-                            onClick={() => handleSaveItem(item.id)}
-                            className="border-gray-300 hover:border-red-300 hover:text-red-600"
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
+                        <div className="space-y-3">
+                          <div className="border-t pt-3 space-y-2">
+                            <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase">Contact Information</h4>
+                            {item.contactEmail && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-gray-500 dark:text-gray-400">📧</span>
+                                <a href={`mailto:${item.contactEmail}`} className="text-violet-600 dark:text-violet-400 hover:underline">
+                                  {item.contactEmail}
+                                </a>
+                              </div>
+                            )}
+                            {item.contactPhone && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-gray-500 dark:text-gray-400">📱</span>
+                                <a href={`tel:${item.contactPhone}`} className="text-violet-600 dark:text-violet-400 hover:underline">
+                                  {item.contactPhone}
+                                </a>
+                              </div>
+                            )}
+                            {!item.contactEmail && !item.contactPhone && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400 italic">No contact information provided</p>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -485,29 +490,27 @@ export default function Search() {
                             </div>
                           </div>
                           
-                          <div className="flex items-center gap-3">
-                            <div className="text-xs text-gray-500 dark:text-gray-400 text-right">
-                              <div>{item.views} views</div>
-                              {item.contactAttempts > 0 && <div>{item.contactAttempts} contacts</div>}
-                            </div>
-                            
-                            <div className="flex gap-2">
-                              <Button 
-                                onClick={() => handleContact(item)}
-                                className={`${
-                                  item.type === 'lost' 
-                                    ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700' 
-                                    : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
-                                } text-white`}
-                                disabled={item.status === 'RESOLVED'}
-                              >
-                                {item.status === 'RESOLVED' ? 'Resolved' : 'Contact'}
-                              </Button>
-                              
-                              <Button variant="outline" size="icon" onClick={() => handleSaveItem(item.id)}>
-                                <Heart className="h-4 w-4" />
-                              </Button>
-                            </div>
+                          <div className="flex flex-col gap-2 min-w-[250px]">
+                            <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase">Contact</div>
+                            {item.contactEmail && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-gray-500 dark:text-gray-400">📧</span>
+                                <a href={`mailto:${item.contactEmail}`} className="text-violet-600 dark:text-violet-400 hover:underline truncate">
+                                  {item.contactEmail}
+                                </a>
+                              </div>
+                            )}
+                            {item.contactPhone && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-gray-500 dark:text-gray-400">📱</span>
+                                <a href={`tel:${item.contactPhone}`} className="text-violet-600 dark:text-violet-400 hover:underline">
+                                  {item.contactPhone}
+                                </a>
+                              </div>
+                            )}
+                            {!item.contactEmail && !item.contactPhone && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400 italic">No contact info</p>
+                            )}
                           </div>
                         </div>
                       </CardContent>
