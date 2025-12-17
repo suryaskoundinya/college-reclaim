@@ -28,6 +28,7 @@ interface Book {
     id: string
     name: string
     email: string
+    phoneNumber?: string
     image?: string
   }
   _count: {
@@ -43,11 +44,25 @@ export default function BooksPage() {
   const [typeFilter, setTypeFilter] = useState("")
 
   useEffect(() => {
-    setTimeout(() => {
-      setBooks(mockBooks)
-      setLoading(false)
-    }, 1000)
-  }, [])
+    const fetchBooks = async () => {
+      try {
+        const params = new URLSearchParams()
+        if (typeFilter) params.append('type', typeFilter)
+        
+        const response = await fetch(`/api/books?${params.toString()}`)
+        if (!response.ok) throw new Error('Failed to fetch books')
+        
+        const data = await response.json()
+        setBooks(data.books || [])
+      } catch (error) {
+        console.error('Error fetching books:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchBooks()
+  }, [typeFilter])
 
   const filteredBooks = books.filter(book => {
     const matchesSearch = searchQuery === "" || 
@@ -162,13 +177,27 @@ export default function BooksPage() {
                         <span className="text-lg font-bold text-green-600 dark:text-green-400">
                           {formatPrice(book.priceOrRent, book.type)}
                         </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {book.type === 'RENT' ? 'Monthly' : 'One-time'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Condition Badge */}
+                        Contact Information */}
+                    <div className="space-y-2 pt-2">
+                      <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Owner Contact:</div>
+                      {book.owner.email && (
+                        <a
+                          href={`mailto:${book.owner.email}`}
+                          className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors"
+                        >
+                          <span className="text-lg">📧</span>
+                          <span className="truncate">{book.owner.email}</span>
+                        </a>
+                      )}
+                      {book.owner.phoneNumber && (
+                        <a
+                          href={`tel:${book.owner.phoneNumber}`}
+                          className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:underline transition-colors"
+                        >
+                          <span className="text-lg">📱</span>
+                          <span>{book.owner.phoneNumber}</span>
+                        </a>
+                      )}tion Badge */}
                     <div className="flex items-center justify-between">
                       <Badge variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">{book.condition}</Badge>
                       <span className="text-xs text-gray-500 dark:text-gray-400">

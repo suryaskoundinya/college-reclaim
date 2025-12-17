@@ -58,6 +58,7 @@ export async function GET(request: NextRequest) {
               id: true,
               name: true,
               email: true,
+              phoneNumber: true,
               college: true
             }
           },
@@ -121,6 +122,7 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             email: true,
+            phoneNumber: true,
             college: true
           }
         }
