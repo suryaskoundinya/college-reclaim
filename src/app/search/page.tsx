@@ -87,6 +87,7 @@ export default function Search() {
       reporter: item.user?.name || 'Anonymous',
       contactEmail: item.user?.email || null,
       contactPhone: item.user?.phoneNumber || null,
+      imageUrl: item.imageUrl || null,
       status: item.status,
       views: 0,
       contactAttempts: 0,
@@ -105,6 +106,7 @@ export default function Search() {
       reporter: item.user?.name || 'Anonymous',
       contactEmail: item.user?.email || null,
       contactPhone: item.user?.phoneNumber || null,
+      imageUrl: item.imageUrl || null,
       status: item.status,
       views: 0,
       contactAttempts: 0,
@@ -393,6 +395,16 @@ export default function Search() {
                       </CardHeader>
                       
                       <CardContent className="pt-0">
+                        {item.imageUrl && (
+                          <div className="mb-4 rounded-lg overflow-hidden">
+                            <img 
+                              src={item.imageUrl} 
+                              alt={item.title}
+                              className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        )}
+                        
                         <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{item.description}</p>
                         
                         <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -462,7 +474,17 @@ export default function Search() {
                       item.type === 'lost' ? 'border-l-4 border-l-red-400 dark:bg-gray-800/90 dark:border-gray-700' : 'border-l-4 border-l-emerald-400 dark:bg-gray-800/90 dark:border-gray-700'
                     } ${item.status === 'RESOLVED' ? 'opacity-60' : ''}`}>
                       <CardContent className="p-6">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                          {item.imageUrl && (
+                            <div className="md:w-40 md:h-28 w-full h-48 rounded-lg overflow-hidden flex-shrink-0">
+                              <img 
+                                src={item.imageUrl} 
+                                alt={item.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
+                          
                           <div className="flex-1">
                             <div className="flex items-start gap-3 mb-2">
                               <Badge variant={item.type === 'lost' ? 'destructive' : 'secondary'}>

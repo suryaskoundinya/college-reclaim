@@ -155,6 +155,23 @@ export default function ReportFound() {
       // Combine date and time with Z suffix for UTC timezone
       const dateTime = formData.foundDate + (formData.foundTime ? 'T' + formData.foundTime : 'T00:00:00') + 'Z'
       
+      // Upload image if exists
+      let imageUrl = undefined
+      if (uploadedImages.length > 0) {
+        const formDataUpload = new FormData()
+        formDataUpload.append('file', uploadedImages[0])
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload,
+        })
+        
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          imageUrl = uploadData.url
+        }
+      }
+      
       const response = await fetch('/api/found-items', {
         method: 'POST',
         headers: {
@@ -167,6 +184,7 @@ export default function ReportFound() {
           location: formData.customLocation || formData.foundLocation,
           dateFound: dateTime,
           handedToAdmin: false,
+          imageUrl: imageUrl,
         }),
       })
 

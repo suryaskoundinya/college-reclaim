@@ -99,6 +99,23 @@ export default function ReportLost() {
       // Combine date and time with Z suffix for UTC timezone
       const dateTime = formData.dateLost + (formData.timeLost ? 'T' + formData.timeLost : 'T00:00:00') + 'Z'
       
+      // Upload image if exists
+      let imageUrl = undefined
+      if (uploadedFiles.length > 0) {
+        const formDataUpload = new FormData()
+        formDataUpload.append('file', uploadedFiles[0])
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload,
+        })
+        
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          imageUrl = uploadData.url
+        }
+      }
+      
       const response = await fetch('/api/lost-items', {
         method: 'POST',
         headers: {
@@ -110,6 +127,7 @@ export default function ReportLost() {
           category: formData.category,
           location: formData.specificLocation || formData.location,
           dateLost: dateTime,
+          imageUrl: imageUrl,
         }),
       })
 
