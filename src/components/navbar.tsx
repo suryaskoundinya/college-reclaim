@@ -224,6 +224,7 @@ export function Navbar() {
                 </Link>
               </div>
             )}
+          </motion.div>
 
           {/* Mobile Menu Button */}
           <motion.div 
@@ -351,8 +352,7 @@ export function Navbar() {
               )}
             </div>
           </motion.div>
-        )}tion.div>
-        </div>
+        )}
       </div>
     </nav>
   )
