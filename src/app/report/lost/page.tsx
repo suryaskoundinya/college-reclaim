@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loading } from "@/components/ui/loading"
 import { Navbar } from "@/components/navbar"
 import { BackButton } from "@/components/ui/back-button"
-import { AlertCircle, MapPin } from "lucide-react"
+import { AlertCircle, MapPin, Upload, X } from "lucide-react"
 import { toast } from "sonner"
 
 const categories = [
@@ -34,7 +34,9 @@ export default function ReportLost() {
     location: "",
     dateLost: ""
   })
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,6 +49,24 @@ export default function ReportLost() {
     setIsSubmitting(true)
     
     try {
+      // Upload image if exists
+      let imageUrl = undefined
+      if (uploadedFiles.length > 0) {
+        const formDataUpload = new FormData()
+        formDataUpload.append('file', uploadedFiles[0])
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload,
+        })
+        
+        if (uploadResponse.ok) {
+          const uploadData = await uploadResponse.json()
+          imageUrl: imageUrl,
+          imageUrl = uploadData.url
+        }
+      }
+      
       const dateTime = formData.dateLost + 'T00:00:00Z'
       
       const response = await fetch('/api/lost-items', {
@@ -80,6 +100,7 @@ export default function ReportLost() {
         location: "",
         dateLost: ""
       })
+      setUploadedFiles([])
       
       setTimeout(() => {
         window.location.href = "/search"
@@ -91,9 +112,26 @@ export default function ReportLost() {
       setIsSubmitting(false)
     }
   }
+const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (files) {
+      const fileArray = Array.from(files)
+      if (uploadedFiles.length + fileArray.length > 3) {
+        toast.error("You can upload maximum 3 images")
+        return
+      }
+      setUploadedFiles(prev => [...prev, ...fileArray])
+      toast.success(`${fileArray.length} file(s) uploaded successfully`)
+    }
+  }
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index))
+    toast.success("File removed")
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-pink-50 dark:from-red-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -104,13 +142,12 @@ export default function ReportLost() {
           animate={{ opacity: 1, y: 0 }}
           className="mt-6"
         >
-          <Card className="shadow-2xl border-2 border-red-100 dark:border-red-900/50">
-            <CardHeader className="bg-gradient-to-r from-red-600 to-orange-600 text-white">
-              <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                <AlertCircle className="h-6 w-6" />
+          <Card className="shadow-2xl border-2 border-red-200 dark:border-red-900/30 bg-white dark:bg-gray-900">
+            <CardHeader className="border-b border-gray-200 dark:border-gray-700">
+              <CardTitle className="text-3xl font-bold flex items-center gap-3 text-red-600 dark:text-red-400">
+                <AlertCircle className="h-8 w-8" />
                 Report Lost Item
               </CardTitle>
-              <p className="text-red-100 text-sm mt-2">Help us find your lost item by providing the details below</p>
             </CardHeader>
             
             <CardContent className="p-6">
@@ -200,12 +237,81 @@ export default function ReportLost() {
                   />
                 </div>
 
+                {/* Image Upload */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Upload Image (Optional)
+                  </Label>
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 hover:border-red-400 dark:hover:border-red-500 transition-colors">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      multiple
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Choose Image
+                    </Button>
+                    {uploadedFiles.length > 0 && (
+                      <div className="mt-3 grid grid-cols-2 gap-3">
+                        {uploadedFiles.map((file, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="w-full h-32 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => removeFile(index)}
+                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">{file.name}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500">Max 3 images, 10MB each</p>
+                </div>
+
+                {/* div>
+                </div>
+
+                {/* Date Lost */}
+                <div className="space-y-2">
+                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Date Lost *
+                  </Label>
+                  <Input
+                    id="dateLost"
+                    type="date"
+                    value={formData.dateLost}
+                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="h-11"
+                    required
+                  />
+                </div>
+
                 {/* Submit Button */}
                 <div className="pt-4">
                   <Button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full h-12 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-semibold text-lg shadow-lg"
+                    className="w-full h-12 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 dark:from-red-700 dark:to-rose-700 dark:hover:from-red-800 dark:hover:to-rose-800 text-white font-semibold text-lg shadow-lg"
                   >
                     {isSubmitting ? (
                       <>

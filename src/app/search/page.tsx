@@ -395,13 +395,20 @@ export default function Search() {
                       </CardHeader>
                       
                       <CardContent className="pt-0">
-                        {item.imageUrl && (
-                          <div className="mb-4 rounded-lg overflow-hidden">
+                        {item.imageUrl ? (
+                          <div className="mb-4 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
                             <img 
                               src={item.imageUrl} 
                               alt={item.title}
                               className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
                             />
+                          </div>
+                        ) : (
+                          <div className="mb-4 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 h-48 flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="text-4xl mb-2">{categories.find(c => c.value === item.category)?.icon || '📦'}</div>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">No image available</p>
+                            </div>
                           </div>
                         )}
                         

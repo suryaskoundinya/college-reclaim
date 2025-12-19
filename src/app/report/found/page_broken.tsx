@@ -16,7 +16,7 @@ import { toast } from "sonner"
 
 const categories = [
   { value: "ELECTRONICS", label: "Electronics", icon: "📱" },
-  { value: "BOOK", label: "Books & Notebooks", icon: "📚" },
+  { value: "BOOK", label: "Books & Stationery", icon: "📚" },
   { value: "ID_CARD", label: "ID Cards & Documents", icon: "🆔" },
   { value: "ACCESSORIES", label: "Accessories & Jewelry", icon: "💍" },
   { value: "CLOTHING", label: "Clothing & Shoes", icon: "👕" },
@@ -41,7 +41,7 @@ export default function ReportFound() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.title || !formData.category || !formData.description || !formData.location || !formData.dateLost) {
+    if (!formData.title || !formData.category || !formData.description || !formData.location || !formData.dateFound) {
       toast.error("Please fill in all required fields")
       return
     }
@@ -49,6 +49,8 @@ export default function ReportFound() {
     setIsSubmitting(true)
     
     try {
+      const dateTime = formData.dateFound + 'T00:00:00Z'
+      
       // Upload image if exists
       let imageUrl = undefined
       if (uploadedFiles.length > 0) {
@@ -65,8 +67,6 @@ export default function ReportFound() {
           imageUrl = uploadData.url
         }
       }
-      
-      const dateTime = formData.dateFound + 'T00:00:00Z'
       
       const response = await fetch('/api/found-items', {
         method: 'POST',
@@ -110,8 +110,7 @@ export default function ReportFound() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (files) {
       const fileArray = Array.from(files)
@@ -142,11 +141,12 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
           className="mt-6"
         >
           <Card className="shadow-2xl border-2 border-green-200 dark:border-green-900/30 bg-white dark:bg-gray-900">
-            <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-              <CardTitle className="text-3xl font-bold flex items-center gap-3 text-green-600 dark:text-green-400">
-                <CheckCircle className="h-8 w-8" />
+            <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 text-white rounded-t-lg">
+              <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                <CheckCircle className="h-6 w-6" />
                 Report Found Item
               </CardTitle>
+              <p className="text-green-50 dark:text-green-100 text-sm mt-2">Help return this item to its owner by providing details</p>
             </CardHeader>
             
             <CardContent className="p-6">
@@ -158,7 +158,7 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   </Label>
                   <Input
                     id="title"
-                    placeholder="e.g., iPhone 14, Blue Backpack, Student ID"
+                    placeholder="e.g., Black Wallet, Red Umbrella, Laptop Charger"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                     className="h-11"
@@ -220,16 +220,16 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   </div>
                 </div>
 
-                {/* Date Lost */}
+                {/* Date Found */}
                 <div className="space-y-2">
-                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Lost *
+                  <Label htmlFor="dateFound" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Date Found *
                   </Label>
                   <Input
-                    id="dateLost"
+                    id="dateFound"
                     type="date"
-                    value={formData.dateLost}
-                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
+                    value={formData.dateFound}
+                    onChange={(e) => setFormData({...formData, dateFound: e.target.value})}
                     max={new Date().toISOString().split('T')[0]}
                     className="h-11"
                     required
@@ -259,25 +259,20 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                       <Upload className="h-4 w-4 mr-2" />
                       Choose Image
                     </Button>
-                    {uploadedFiles.length > 0 && (
-                      <div className="mt-3 grid grid-cols-2 gap-3">
+                    className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold text-lg shadow-lg"
+                      <div className="mt-3 space-y-2">
                         {uploadedFiles.map((file, index) => (
-                          <div key={index} className="relative group">
-                            <img
-                              src={URL.createObjectURL(file)}
-                              alt={file.name}
-                              className="w-full h-32 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600"
-                            />
+                          <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                            <span className="text-sm truncate flex-1">{file.name}</span>
                             <Button
                               type="button"
-                              variant="destructive"
+                              variant="ghost"
                               size="sm"
                               onClick={() => removeFile(index)}
-                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="ml-2"
                             >
                               <X className="h-4 w-4" />
                             </Button>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">{file.name}</p>
                           </div>
                         ))}
                       </div>
@@ -286,31 +281,12 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   <p className="text-xs text-gray-500">Max 3 images, 10MB each</p>
                 </div>
 
-                {/* div>
-                </div>
-
-                {/* Date Lost */}
-                <div className="space-y-2">
-                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Lost *
-                  </Label>
-                  <Input
-                    id="dateLost"
-                    type="date"
-                    value={formData.dateLost}
-                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
-                    max={new Date().toISOString().split('T')[0]}
-                    className="h-11"
-                    required
-                  />
-                </div>
-
                 {/* Submit Button */}
                 <div className="pt-4">
                   <Button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full h-12 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 dark:from-red-700 dark:to-rose-700 dark:hover:from-red-800 dark:hover:to-rose-800 text-white font-semibold text-lg shadow-lg"
+                    className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-700 dark:to-emerald-700 dark:hover:from-green-800 dark:hover:to-emerald-800 text-white font-semibold text-lg shadow-lg"
                   >
                     {isSubmitting ? (
                       <>
@@ -318,7 +294,7 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                         Submitting...
                       </>
                     ) : (
-                      "Report Lost Item"
+                      "Report Found Item"
                     )}
                   </Button>
                 </div>
