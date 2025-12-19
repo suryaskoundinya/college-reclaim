@@ -287,25 +287,6 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   <p className="text-xs text-gray-500">Max 3 images, 10MB each</p>
                 </div>
 
-                {/* div>
-                </div>
-
-                {/* Date Lost */}
-                <div className="space-y-2">
-                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Lost *
-                  </Label>
-                  <Input
-                    id="dateLost"
-                    type="date"
-                    value={formData.dateLost}
-                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
-                    max={new Date().toISOString().split('T')[0]}
-                    className="h-11"
-                    required
-                  />
-                </div>
-
                 {/* Submit Button */}
                 <div className="pt-4">
                   <Button 

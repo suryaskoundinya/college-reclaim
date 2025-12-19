@@ -2,7 +2,6 @@ import { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import GitHubProvider from "next-auth/providers/github"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
@@ -64,10 +63,6 @@ export const authOptions: NextAuthOptions = {
           role: profile.email?.endsWith('@university.edu') ? 'STAFF' : 'STUDENT',
         }
       },
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID ?? "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
     }),
   ],
   session: {

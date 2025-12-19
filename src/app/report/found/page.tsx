@@ -41,7 +41,7 @@ export default function ReportFound() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.title || !formData.category || !formData.description || !formData.location || !formData.dateLost) {
+    if (!formData.title || !formData.category || !formData.description || !formData.location || !formData.dateFound) {
       toast.error("Please fill in all required fields")
       return
     }
@@ -220,16 +220,16 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   </div>
                 </div>
 
-                {/* Date Lost */}
+                {/* Date Found */}
                 <div className="space-y-2">
-                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Lost *
+                  <Label htmlFor="dateFound" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Date Found *
                   </Label>
                   <Input
-                    id="dateLost"
+                    id="dateFound"
                     type="date"
-                    value={formData.dateLost}
-                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
+                    value={formData.dateFound}
+                    onChange={(e) => setFormData({...formData, dateFound: e.target.value})}
                     max={new Date().toISOString().split('T')[0]}
                     className="h-11"
                     required
@@ -287,22 +287,6 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                 </div>
 
                 {/* div>
-                </div>
-
-                {/* Date Lost */}
-                <div className="space-y-2">
-                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Lost *
-                  </Label>
-                  <Input
-                    id="dateLost"
-                    type="date"
-                    value={formData.dateLost}
-                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
-                    max={new Date().toISOString().split('T')[0]}
-                    className="h-11"
-                    required
-                  />
                 </div>
 
                 {/* Submit Button */}

@@ -72,9 +72,6 @@ export default function Search() {
 
   // Combine and transform items for display
   const allItems = useMemo(() => {
-    console.log('Lost items:', lostItems)
-    console.log('Found items:', foundItems)
-    
     const transformedLost = lostItems.map(item => ({
       id: item.id,
       type: 'lost',
@@ -114,16 +111,11 @@ export default function Search() {
     }))
 
     const combined = [...transformedLost, ...transformedFound]
-    console.log('All items combined:', combined)
-    console.log('Total items:', combined.length)
     return combined
   }, [lostItems, foundItems])
 
   // Memoized filtered items for better performance
   const filteredItems = useMemo(() => {
-    console.log('Filtering with:', { searchQuery, categoryFilter, typeFilter, statusFilter, sortBy })
-    console.log('All items before filter:', allItems.length)
-    
     const filtered = allItems.filter(item => {
       const matchesQuery = searchQuery === '' || 
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -147,8 +139,7 @@ export default function Search() {
           return 0
       }
     })
-    
-    console.log('Filtered items:', filtered.length)
+
     return filtered
   }, [searchQuery, categoryFilter, typeFilter, statusFilter, sortBy, allItems])
 
