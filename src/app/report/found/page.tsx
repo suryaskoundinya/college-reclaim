@@ -79,6 +79,7 @@ export default function ReportFound() {
           category: formData.category,
           location: formData.location,
           dateFound: dateTime,
+          imageUrl: imageUrl,
         }),
       })
 

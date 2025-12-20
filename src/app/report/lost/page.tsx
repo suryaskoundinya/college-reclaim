@@ -79,6 +79,7 @@ export default function ReportLost() {
           category: formData.category,
           location: formData.location,
           dateLost: dateTime,
+          imageUrl: imageUrl,
         }),
       })
 
