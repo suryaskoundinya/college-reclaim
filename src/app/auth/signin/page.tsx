@@ -58,7 +58,8 @@ export default function SignIn() {
     setIsLoading(true)
     try {
       const result = await signIn("google", {
-        callbackUrl: window.location.origin,
+        callbackUrl: "/",
+        redirect: true,
       })
       if (result?.error) {
         toast.error("Google sign in failed. Please try again.")

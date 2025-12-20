@@ -107,7 +107,8 @@ export const authOptions: NextAuthOptions = {
         // Invalid URL, return base
       }
       
-      return actualBaseUrl
+      // Default redirect to home page
+      return `${actualBaseUrl}/`
     },
   },
   pages: {
