@@ -72,6 +72,17 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model PasswordResetOTP {
+  id        String   @id @default(cuid())
+  email     String
+  otpHash   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@map("password_reset_otps")
+}
+
 model LostItem {
   id          String     @id @default(cuid())
   title       String

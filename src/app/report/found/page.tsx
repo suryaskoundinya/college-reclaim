@@ -13,6 +13,7 @@ import { Navbar } from "@/components/navbar"
 import { BackButton } from "@/components/ui/back-button"
 import { CheckCircle, MapPin, Upload, X } from "lucide-react"
 import { toast } from "sonner"
+import { locations } from "@/data/locations"
 
 const categories = [
   { value: "ELECTRONICS", label: "Electronics", icon: "📱" },
@@ -31,6 +32,8 @@ export default function ReportFound() {
     title: "",
     description: "",
     category: "",
+    locationSelect: "",
+    customLocation: "",
     location: "",
     dateFound: ""
   })
@@ -41,8 +44,15 @@ export default function ReportFound() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.title || !formData.category || !formData.description || !formData.location || !formData.dateFound) {
+    // Validate location
+    const finalLocation = formData.locationSelect === "other" ? formData.customLocation : formData.locationSelect
+    if (!formData.title || !formData.category || !formData.description || !finalLocation || !formData.dateFound) {
       toast.error("Please fill in all required fields")
+      return
+    }
+    
+    if (formData.locationSelect === "other" && !formData.customLocation.trim()) {
+      toast.error("Please specify the location")
       return
     }
 
@@ -67,6 +77,7 @@ export default function ReportFound() {
       }
       
       const dateTime = formData.dateFound + 'T00:00:00Z'
+      const finalLocation = formData.locationSelect === "other" ? formData.customLocation : formData.locationSelect
       
       const response = await fetch('/api/found-items', {
         method: 'POST',
@@ -77,7 +88,7 @@ export default function ReportFound() {
           title: formData.title,
           description: formData.description,
           category: formData.category,
-          location: formData.location,
+          location: finalLocation,
           dateFound: dateTime,
           imageUrl: imageUrl,
         }),
@@ -97,6 +108,8 @@ export default function ReportFound() {
         title: "",
         description: "",
         category: "",
+        locationSelect: "",
+        customLocation: "",
         location: "",
         dateFound: ""
       })
@@ -205,20 +218,38 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 
                 {/* Location */}
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="locationSelect" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Location Where Found *
                   </Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="location"
-                      placeholder="e.g., Library 2nd Floor, Basketball Court, Main Gate"
-                      value={formData.location}
-                      onChange={(e) => setFormData({...formData, location: e.target.value})}
-                      className="pl-10 h-11"
-                      required
-                    />
-                  </div>
+                  <Select 
+                    value={formData.locationSelect} 
+                    onValueChange={(value) => setFormData({...formData, locationSelect: value, customLocation: value !== "other" ? "" : formData.customLocation})}
+                  >
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select location" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {locations.map((loc) => (
+                        <SelectItem key={loc.id} value={loc.id}>
+                          {loc.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  {formData.locationSelect === "other" && (
+                    <div className="relative mt-3">
+                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="customLocation"
+                        placeholder="Please specify the location"
+                        value={formData.customLocation}
+                        onChange={(e) => setFormData({...formData, customLocation: e.target.value})}
+                        className="pl-10 h-11"
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Date Found */}
