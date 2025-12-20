@@ -11,7 +11,7 @@ const lostItemSchema = z.object({
   category: z.enum(['BOOK', 'ELECTRONICS', 'ID_CARD', 'ACCESSORIES', 'CLOTHING', 'KEYS', 'BAGS', 'SPORTS', 'OTHER']),
   location: z.string().min(1, 'Location is required'),
   dateLost: z.string().datetime('Invalid date format'),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().optional(),
 })
 
 // GET /api/lost-items - Get all lost items with filtering

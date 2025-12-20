@@ -12,7 +12,7 @@ const foundItemSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   dateFound: z.string().datetime('Invalid date format'),
   handedToAdmin: z.boolean().default(false),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().optional(),
 })
 
 // GET /api/found-items - Get all found items with filtering
