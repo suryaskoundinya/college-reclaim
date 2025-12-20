@@ -62,7 +62,6 @@ export default function ReportLost() {
         
         if (uploadResponse.ok) {
           const uploadData = await uploadResponse.json()
-          imageUrl: imageUrl,
           imageUrl = uploadData.url
         }
       }
