@@ -20,7 +20,8 @@ export async function GET(
             email: true,
             role: true,
             department: true,
-            coordinatorTitle: true
+            coordinatorTitle: true,
+            image: true
           }
         },
         _count: {

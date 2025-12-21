@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     try {
       const users = await prisma.user.findMany({
         where: {
-          emailVerified: true,
+          emailVerified: { not: null },
         },
         select: {
           email: true,

@@ -23,11 +23,13 @@ interface Event {
   contactInfo?: string | null
   imageUrl?: string | null
   createdAt: string
+  isInterestedByUser?: boolean
   postedBy: {
     id: string
     name: string | null
     email: string
     role: string
+    image?: string | null
   }
   _count: {
     interested: number
@@ -119,7 +121,7 @@ export default function EventDetailsPage() {
         isInterestedByUser: data.isInterested,
         _count: {
           ...prev._count,
-          interests: prev._count.interests + (data.isInterested ? 1 : -1)
+          interested: prev._count.interested + (data.isInterested ? 1 : -1)
         }
       } : null)
 
@@ -373,7 +375,7 @@ export default function EventDetailsPage() {
                 <CardContent>
                   <div className="flex items-center gap-3">
                     <Avatar className="w-12 h-12">
-                      <AvatarImage src={event.postedBy.image} />
+                      <AvatarImage src={event.postedBy.image || undefined} />
                       <AvatarFallback>
                         {event.postedBy.name?.charAt(0) || <User className="w-6 h-6" />}
                       </AvatarFallback>
