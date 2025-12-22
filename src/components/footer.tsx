@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Coffee } from "lucide-react";
+import { CoffeeModal } from "@/components/coffee-modal";
 
 export function Footer() {
+  const [isCoffeeModalOpen, setIsCoffeeModalOpen] = useState(false);
   return (
     <footer className="border-t bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm relative z-10 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -72,14 +75,32 @@ export function Footer() {
           </motion.div>
         </div>
         <motion.div 
-          className="border-t mt-8 pt-8 text-center"
+          className="border-t mt-8 pt-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <p className="text-gray-600 dark:text-gray-400 transition-colors duration-300">&copy; 2025 College Reclaim. Made with ❤️ by Surya.</p>
+          <div className="text-center mb-6">
+            <button
+              onClick={() => setIsCoffeeModalOpen(true)}
+              style={{ display: 'inline-flex' }}
+              className="items-center space-x-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-full shadow-lg"
+            >
+              ☕ Support the Developer
+            </button>
+          </div>
+
+          <p className="text-gray-600 dark:text-gray-400 transition-colors duration-300 text-center">&copy; 2025 College Reclaim. Made with ❤️ by Surya.</p>
         </motion.div>
       </div>
+
+      {/* Coffee Modal */}
+      {isCoffeeModalOpen && (
+        <CoffeeModal 
+          isOpen={isCoffeeModalOpen} 
+          onClose={() => setIsCoffeeModalOpen(false)} 
+        />
+      )}
     </footer>
   );
 }
