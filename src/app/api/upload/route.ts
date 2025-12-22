@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg']
@@ -44,31 +42,16 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Generate unique filename
-    const timestamp = Date.now()
-    const randomString = Math.random().toString(36).substring(7)
-    const ext = file.name.split('.').pop()
-    const filename = `${timestamp}-${randomString}.${ext}`
-
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    try {
-      await mkdir(uploadsDir, { recursive: true })
-    } catch (error) {
-      // Directory might already exist
-    }
-
-    // Convert file to buffer and save
+    // Convert file to base64 data URL for storage in database
+    // This works on serverless platforms like Vercel
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const filepath = path.join(uploadsDir, filename)
-    await writeFile(filepath, buffer)
-
-    const url = `/uploads/${filename}`
+    const base64 = buffer.toString('base64')
+    const dataUrl = `data:${file.type};base64,${base64}`
 
     return NextResponse.json({
       message: 'File uploaded successfully',
-      url,
+      url: dataUrl, // Return base64 data URL instead of file path
       filename: file.name,
       size: file.size,
       type: file.type
@@ -77,7 +60,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('File upload error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to upload image. Please try again.' },
       { status: 500 }
     )
   }
