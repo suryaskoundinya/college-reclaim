@@ -234,17 +234,32 @@ export function Navbar() {
             )}
           </motion.div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Navigation - Show Sign In/Sign Up directly */}
           <motion.div 
-            className="flex md:hidden items-center space-x-2"
+            className="flex md:hidden items-center space-x-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
+            {!session ? (
+              <>
+                <Link href="/auth/signin" prefetch={true}>
+                  <Button variant="ghost" size="sm" className="text-xs px-2 hover:bg-gray-50 dark:hover:bg-gray-800 dark:text-gray-300">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/signup" prefetch={true}>
+                  <Button size="sm" className="text-xs px-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            ) : null}
+            
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleTheme}
-              className="hover:bg-violet-50 dark:hover:bg-gray-800 dark:text-gray-300"
+              className="hover:bg-violet-50 dark:hover:bg-gray-800 dark:text-gray-300 px-2"
             >
               {theme === "light" ? (
                 <Moon className="h-4 w-4" />
@@ -257,7 +272,7 @@ export function Navbar() {
               variant="ghost"
               size="sm"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="hover:bg-violet-50 dark:hover:bg-gray-800 dark:text-gray-300"
+              className="hover:bg-violet-50 dark:hover:bg-gray-800 dark:text-gray-300 px-2"
             >
               {mobileMenuOpen ? (
                 <X className="h-5 w-5" />
@@ -276,88 +291,90 @@ export function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden border-t dark:border-gray-700 py-4"
           >
-            <div className="flex flex-col space-y-3">
-              {/* Show Sign In/Sign Up at top for unauthenticated users */}
-              {!session && (
-                <>
-                  <Link href="/auth/signin" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300 dark:hover:text-gray-100">
-                      <User className="h-4 w-4 mr-2" />
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signup" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white">
-                      Sign Up
-                    </Button>
-                  </Link>
-                  <div className="border-t dark:border-gray-700 pt-3 mt-2"></div>
-                </>
-              )}
-
+            <div className="flex flex-col space-y-2">
               <Link href="/search" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start dark:text-gray-300">
-                  <Search className="h-4 w-4 mr-2" />
+                <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10">
+                  <Search className="h-4 w-4 mr-3" />
                   Search Items
                 </Button>
               </Link>
               
               <Link href="/books" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start dark:text-gray-300">
-                  <BookOpen className="h-4 w-4 mr-2" />
+                <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10">
+                  <BookOpen className="h-4 w-4 mr-3" />
                   Book Marketplace
                 </Button>
               </Link>
               
               <Link href="/events" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start dark:text-gray-300">
-                  <CalendarDays className="h-4 w-4 mr-2" />
+                <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10">
+                  <CalendarDays className="h-4 w-4 mr-3" />
                   Campus Events
                 </Button>
               </Link>
 
               {session && (
                 <>
-                  <div className="border-t dark:border-gray-700 pt-3 mt-2"></div>
+                  <div className="border-t dark:border-gray-700 my-2"></div>
                   <Link href="/report/lost" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full justify-start border-red-200 dark:border-red-800 text-red-600 dark:text-red-400">
-                      <Plus className="h-4 w-4 mr-2" />
+                    <Button variant="outline" className="w-full justify-start border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 h-10">
+                      <Plus className="h-4 w-4 mr-3" />
                       Report Lost Item
                     </Button>
                   </Link>
                   
                   <Link href="/report/found" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full justify-start border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400">
-                      <Plus className="h-4 w-4 mr-2" />
+                    <Button variant="outline" className="w-full justify-start border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 h-10">
+                      <Plus className="h-4 w-4 mr-3" />
                       Report Found Item
                     </Button>
                   </Link>
 
-                  <div className="border-t dark:border-gray-700 pt-3 mt-2"></div>
+                  <div className="border-t dark:border-gray-700 my-2"></div>
                   
                   <Link href="/dashboard" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300">
-                      <User className="h-4 w-4 mr-2" />
+                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10">
+                      <User className="h-4 w-4 mr-3" />
                       Dashboard
                     </Button>
                   </Link>
                   
                   <Link href="/profile" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300">
-                      <Settings className="h-4 w-4 mr-2" />
+                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10">
+                      <Settings className="h-4 w-4 mr-3" />
                       Profile
                     </Button>
                   </Link>
                   
+                  {session.user?.role === "ADMIN" && (
+                    <Link href="/admin" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start text-red-600 dark:text-red-400 h-10">
+                        <Settings className="h-4 w-4 mr-3" />
+                        Admin Panel
+                      </Button>
+                    </Link>
+                  )}
+                  
+                  {session.user?.role === "COORDINATOR" && (
+                    <Link href="/coordinator" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start text-blue-600 dark:text-blue-400 h-10">
+                        <CalendarDays className="h-4 w-4 mr-3" />
+                        Coordinator Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                  
+                  <div className="border-t dark:border-gray-700 my-2"></div>
+                  
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start text-red-600 dark:text-red-400"
+                    className="w-full justify-start text-red-600 dark:text-red-400 h-10"
                     onClick={() => {
                       setMobileMenuOpen(false)
                       signOut()
                     }}
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
+                    <LogOut className="h-4 w-4 mr-3" />
                     Log out
                   </Button>
                 </>

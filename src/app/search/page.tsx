@@ -167,20 +167,20 @@ export default function Search() {
 
       <Navbar />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <BackButton showHomeButton showBackButton className="mb-6" />
+          <BackButton showHomeButton showBackButton className="mb-4 sm:mb-6" />
           
-          <div className="text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <div className="text-center md:text-left px-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent mb-3 sm:mb-4">
               Search Lost & Found Items
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto md:mx-0">
+            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto md:mx-0">
               Find your lost items or browse found items to help others reconnect with their belongings
             </p>
           </div>
@@ -192,35 +192,35 @@ export default function Search() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <Card className="mb-8 bg-white/70 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 shadow-xl">
-            <CardHeader>
-              <CardTitle className="flex items-center text-xl md:text-2xl dark:text-gray-100">
-                <SearchIcon className="h-5 w-5 mr-3 text-violet-600 dark:text-violet-400" />
+          <Card className="mb-6 sm:mb-8 bg-white/70 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/50 shadow-xl">
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="flex items-center text-lg sm:text-xl md:text-2xl dark:text-gray-100">
+                <SearchIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3 text-violet-600 dark:text-violet-400" />
                 Advanced Search & Filters
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div className="md:col-span-2 lg:col-span-1">
-                  <Label htmlFor="search" className="text-sm font-medium text-gray-700 dark:text-gray-300">Search Items</Label>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="sm:col-span-2 lg:col-span-1">
+                  <Label htmlFor="search" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Search Items</Label>
                   <Input
                     id="search"
-                    placeholder="Search by title, description, location..."
+                    placeholder="Search by title, description..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="mt-1"
+                    className="mt-1 text-sm"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="category" className="text-sm font-medium text-gray-700 dark:text-gray-300">Category</Label>
+                  <Label htmlFor="category" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Category</Label>
                   <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="mt-1">
+                    <SelectTrigger className="mt-1 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map(category => (
-                        <SelectItem key={category.value} value={category.value}>
+                        <SelectItem key={category.value} value={category.value} className="text-sm">
                           {category.icon} {category.label}
                         </SelectItem>
                       ))}
@@ -229,39 +229,39 @@ export default function Search() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="type" className="text-sm font-medium text-gray-700 dark:text-gray-300">Item Type</Label>
+                  <Label htmlFor="type" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Item Type</Label>
                   <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="mt-1">
+                    <SelectTrigger className="mt-1 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="ALL">📦 All Items</SelectItem>
-                      <SelectItem value="lost">❌ Lost Items</SelectItem>
-                      <SelectItem value="found">✅ Found Items</SelectItem>
+                      <SelectItem value="ALL" className="text-sm">📦 All Items</SelectItem>
+                      <SelectItem value="lost" className="text-sm">❌ Lost Items</SelectItem>
+                      <SelectItem value="found" className="text-sm">✅ Found Items</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label htmlFor="status" className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</Label>
+                  <Label htmlFor="status" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</Label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="mt-1">
+                    <SelectTrigger className="mt-1 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="ACTIVE">🟢 Active</SelectItem>
-                      <SelectItem value="RESOLVED">✅ Resolved</SelectItem>
-                      <SelectItem value="ALL">📋 All Status</SelectItem>
+                      <SelectItem value="ACTIVE" className="text-sm">🟢 Active</SelectItem>
+                      <SelectItem value="RESOLVED" className="text-sm">✅ Resolved</SelectItem>
+                      <SelectItem value="ALL" className="text-sm">📋 All Status</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
                   <Button 
                     onClick={handleSearch} 
-                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700"
+                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-sm w-full sm:w-auto"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -275,24 +275,24 @@ export default function Search() {
                   </Button>
                   
                   <div className="flex items-center gap-2">
-                    <Label htmlFor="sort" className="text-sm text-gray-600 dark:text-gray-400">Sort by:</Label>
+                    <Label htmlFor="sort" className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Sort by:</Label>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-32">
+                      <SelectTrigger className="w-full sm:w-32 text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="date">📅 Date</SelectItem>
-                        <SelectItem value="views">👁️ Views</SelectItem>
-                        <SelectItem value="title">🔤 Title</SelectItem>
+                        <SelectItem value="date" className="text-sm">📅 Date</SelectItem>
+                        <SelectItem value="views" className="text-sm">👁️ Views</SelectItem>
+                        <SelectItem value="title" className="text-sm">🔤 Title</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-                  <TabsList>
-                    <TabsTrigger value="grid">Grid View</TabsTrigger>
-                    <TabsTrigger value="list">List View</TabsTrigger>
+                  <TabsList className="w-full sm:w-auto grid grid-cols-2">
+                    <TabsTrigger value="grid" className="text-xs sm:text-sm">Grid View</TabsTrigger>
+                    <TabsTrigger value="list" className="text-xs sm:text-sm">List View</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
