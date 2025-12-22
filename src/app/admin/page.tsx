@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { 
   Shield, Mail, Trash2, BookOpen, Package, 
   Calendar, UserCheck, ThumbsUp, ThumbsDown,
-  Moon, Sun, Home, LogOut
+  Moon, Sun, Home, LogOut, RefreshCw
 } from "lucide-react"
 import { toast } from "sonner"
 import { useTheme } from "@/components/providers"
@@ -106,13 +106,25 @@ export default function AdminDashboard() {
         body: JSON.stringify({ action })
       })
 
+      const data = await res.json()
+
       if (res.ok) {
-        toast.success(`Request ${action}d successfully`)
+        if (action === "approve" && data.emailSent === false) {
+          // Email failed, show warning with OTP
+          toast.warning(
+            `Request approved but email failed! Manually send this setup code to ${data.email}: ${data.otp}`,
+            { duration: 10000 }
+          )
+        } else {
+          toast.success(data.message || `Request ${action}d successfully`)
+        }
         fetchData()
       } else {
-        toast.error(`Failed to ${action} request`)
+        console.error(`Failed to ${action} request:`, data)
+        toast.error(data.error || `Failed to ${action} request`)
       }
     } catch (error) {
+      console.error("Error processing request:", error)
       toast.error("Error processing request")
     } finally {
       setIsLoading(false)
@@ -438,8 +450,18 @@ export default function AdminDashboard() {
           {/* Coordinators Tab */}
           <TabsContent value="coordinators">
             <Card className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-gray-900 dark:text-white">Coordinator Requests</CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={fetchData}
+                  disabled={isLoading}
+                  className="ml-auto"
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -546,29 +568,15 @@ export default function AdminDashboard() {
                   {!sendToAll && (
                     <div>
                       <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Select Recipient
+                        Recipient Email Address
                       </label>
-                      <select
+                      <Input
+                        type="email"
                         value={recipientEmail}
                         onChange={(e) => setRecipientEmail(e.target.value)}
-                        className="w-full p-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-md text-gray-900 dark:text-white font-medium"
-                      >
-                        <option value="" className="text-gray-500">-- Select a user --</option>
-                        {users.map((user) => (
-                          <option key={user.id} value={user.email} className="py-2">
-                            {user.name || 'No Name'} | {user.email} | {user.role} | {user.department || 'No Dept'}
-                            {user.emailVerified ? ' ✓' : ' ✗'}
-                          </option>
-                        ))}
-                      </select>
-                      
-                      {recipientEmail && (
-                        <div className="mt-2 p-3 bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800 rounded-md">
-                          <p className="text-sm text-purple-800 dark:text-purple-200">
-                            <strong>Selected:</strong> {users.find(u => u.email === recipientEmail)?.name || recipientEmail}
-                          </p>
-                        </div>
-                      )}
+                        placeholder="Enter recipient email address..."
+                        className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white"
+                      />
                     </div>
                   )}
 

@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
         );
       } else if (existingRequest.status === "REJECTED") {
         // Allow resubmission by updating the existing rejected request
+        console.log(`Resubmitting rejected request for ${email}`);
         const updatedRequest = await prisma.coordinatorRequest.update({
           where: { email },
           data: {
@@ -45,6 +46,11 @@ export async function POST(request: NextRequest) {
             reviewedBy: null,
             updatedAt: new Date(),
           },
+        });
+        console.log(`Request updated to PENDING:`, {
+          id: updatedRequest.id,
+          status: updatedRequest.status,
+          email: updatedRequest.email
         });
 
         // Send confirmation email for resubmission

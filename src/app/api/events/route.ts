@@ -114,14 +114,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has permission to create events
-    // For now, allow all authenticated users, but you can add role-based checks here
-    if (session.user.role === 'STUDENT') {
-      // Optionally restrict students from creating events
-      // Uncomment the following lines if you want to restrict
-      // return NextResponse.json(
-      //   { error: 'Only staff and admins can create events' },
-      //   { status: 403 }
-      // )
+    // Only COORDINATOR and ADMIN roles can create events
+    if (session.user.role !== 'COORDINATOR' && session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Forbidden - Only coordinators and admins can create events' },
+        { status: 403 }
+      )
     }
 
     const body = await request.json()

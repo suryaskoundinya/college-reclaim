@@ -28,13 +28,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Subject and message are required" }, { status: 400 })
     }
 
-    let users: { email: string; name: string | null }[] = []
+    let users: { email: string; name: string | null; id: string }[] = []
 
     if (recipientEmail) {
       // Send to specific email
       const user = await prisma.user.findUnique({
         where: { email: recipientEmail },
-        select: { email: true, name: true }
+        select: { email: true, name: true, id: true }
       })
 
       if (!user) {
@@ -45,13 +45,13 @@ export async function POST(request: Request) {
     } else {
       // Get all users (no email verification filter)
       users = await prisma.user.findMany({
-        select: { email: true, name: true }
+        select: { email: true, name: true, id: true }
       })
     }
 
     // Send emails to all users with individual tracking
     const emailResults = await Promise.allSettled(
-      users.map((user: { email: string; name: string | null }) => 
+      users.map((user: { email: string; name: string | null; id: string }) => 
         sendEmail({
           to: user.email,
           subject: subject,
@@ -72,13 +72,30 @@ export async function POST(request: Request) {
               </p>
             </div>
           `
-        }).then(() => ({ email: user.email, success: true }))
-          .catch(err => ({ email: user.email, success: false, error: err.message }))
+        }).then(() => ({ email: user.email, userId: user.id, success: true }))
+          .catch(err => ({ email: user.email, userId: user.id, success: false, error: err.message }))
       )
     )
 
     const successful = emailResults.filter(r => r.status === 'fulfilled' && r.value.success).length
     const failed = emailResults.filter(r => r.status === 'rejected' || (r.status === 'fulfilled' && !r.value.success))
+    
+    // Create in-app notifications for all users (regardless of email success)
+    try {
+      await prisma.notification.createMany({
+        data: users.map(user => ({
+          userId: user.id,
+          title: subject,
+          message: message,
+          type: 'INFO',
+          read: false
+        }))
+      })
+      console.log(`✅ Created ${users.length} in-app notifications`)
+    } catch (notifError) {
+      console.error('❌ Failed to create in-app notifications:', notifError)
+      // Continue even if in-app notifications fail
+    }
     
     if (failed.length > 0) {
       const failedEmails = failed.map(r => r.status === 'fulfilled' ? r.value.email : 'unknown')

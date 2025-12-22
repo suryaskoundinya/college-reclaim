@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 
 interface Notification {
   id: string
+  title: string
   message: string
   createdAt: string
   read: boolean
@@ -33,7 +34,14 @@ export default function NotificationsPage() {
       const res = await fetch("/api/notifications")
       if (res.ok) {
         const data = await res.json()
-        setNotifications(Array.isArray(data) ? data : [])
+        // Handle both array and object response formats
+        if (Array.isArray(data)) {
+          setNotifications(data)
+        } else if (data.notifications && Array.isArray(data.notifications)) {
+          setNotifications(data.notifications)
+        } else {
+          setNotifications([])
+        }
       }
     } catch (error) {
       console.error("Error fetching notifications:", error)
@@ -90,13 +98,14 @@ export default function NotificationsPage() {
                 <CardContent className="py-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-gray-900 dark:text-gray-100">{notification.message}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {new Date(notification.createdAt).toLocaleDateString()}
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{notification.title}</h3>
+                      <p className="text-gray-700 dark:text-gray-300 text-sm">{notification.message}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        {new Date(notification.createdAt).toLocaleDateString()} {new Date(notification.createdAt).toLocaleTimeString()}
                       </p>
                     </div>
                     {!notification.read && (
-                      <div className="h-2 w-2 bg-violet-600 rounded-full"></div>
+                      <div className="h-2 w-2 bg-violet-600 rounded-full ml-2 mt-1"></div>
                     )}
                   </div>
                 </CardContent>

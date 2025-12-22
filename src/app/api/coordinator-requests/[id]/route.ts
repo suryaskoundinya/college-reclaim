@@ -41,6 +41,12 @@ export async function POST(
       where: { id },
     });
 
+    console.log(`Processing ${action} for request ${id}:`, {
+      found: !!coordinatorRequest,
+      status: coordinatorRequest?.status,
+      email: coordinatorRequest?.email
+    });
+
     if (!coordinatorRequest) {
       return NextResponse.json(
         { error: "Request not found" },
@@ -49,8 +55,9 @@ export async function POST(
     }
 
     if (coordinatorRequest.status !== "PENDING") {
+      console.log(`Request ${id} status is ${coordinatorRequest.status}, expected PENDING`);
       return NextResponse.json(
-        { error: "Request has already been processed" },
+        { error: `Request has already been processed (status: ${coordinatorRequest.status})` },
         { status: 400 }
       );
     }
@@ -111,11 +118,15 @@ export async function POST(
       });
 
       // Send approval email with setup link
+      console.log(`Attempting to send approval email to ${coordinatorRequest.email} with OTP: ${otp}`);
+      let emailSent = false;
+      let emailError = null;
+      
       try {
         await sendEmail({
-        to: coordinatorRequest.email,
-        subject: "Coordinator Access Approved - Set Your Password",
-        html: `
+          to: coordinatorRequest.email,
+          subject: "Coordinator Access Approved - Set Your Password",
+          html: `
           <!DOCTYPE html>
           <html>
             <head>
@@ -178,13 +189,22 @@ export async function POST(
           </html>
         `,
         });
-      } catch (emailError) {
-        console.error("Failed to send approval email:", emailError);
-        // Continue even if email fails
+        emailSent = true;
+        console.log(`✅ Approval email sent successfully to ${coordinatorRequest.email}`);
+      } catch (error) {
+        emailError = error;
+        console.error("❌ Failed to send approval email:", error);
       }
 
       return NextResponse.json(
-        { message: "Request approved and password setup link sent" },
+        { 
+          message: emailSent 
+            ? "Request approved and password setup email sent" 
+            : "Request approved but email failed to send. Please contact the coordinator directly.",
+          emailSent,
+          email: coordinatorRequest.email,
+          otp: !emailSent ? otp : undefined // Include OTP in response if email failed
+        },
         { status: 200 }
       );
     } else {
