@@ -212,8 +212,8 @@ export default function Home() {
                       >
                         😢
                       </motion.div>
-                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-red-800 dark:text-red-700 group-hover:text-red-900 dark:group-hover:text-red-800 mb-2">I Lost Something</h3>
-                      <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-600 transition-colors duration-300">Report your lost item with details and get help from the community</p>
+                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-red-800 mb-2">I Lost Something</h3>
+                      <p className="text-xs sm:text-sm text-gray-800 font-semibold">Report your lost item with details and get help from the community</p>
                       <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <ArrowRight className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
                       </div>
@@ -240,8 +240,8 @@ export default function Home() {
                       >
                         🎉
                       </motion.div>
-                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-emerald-800 dark:text-emerald-700 group-hover:text-emerald-900 dark:group-hover:text-emerald-800 mb-2">I Found Something</h3>
-                      <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-600 transition-colors duration-300">Help someone recover their item and make their day better</p>
+                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-emerald-800 mb-2">I Found Something</h3>
+                      <p className="text-xs sm:text-sm text-gray-800 font-semibold">Help someone recover their item and make their day better</p>
                       <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <ArrowRight className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
                       </div>
@@ -268,8 +268,8 @@ export default function Home() {
                       >
                         🔍
                       </motion.div>
-                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-violet-800 dark:text-violet-700 group-hover:text-violet-900 dark:group-hover:text-violet-800 mb-2">Browse Items</h3>
-                      <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-600 transition-colors duration-300">Search through all lost & found items in the database</p>
+                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-violet-900 mb-2">Browse Items</h3>
+                      <p className="text-xs sm:text-sm text-gray-800 font-semibold">Search through all lost & found items in the database</p>
                       <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <ArrowRight className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-violet-600" />
                       </div>
@@ -321,8 +321,8 @@ export default function Home() {
                       >
                         <BookOpen className="text-white w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
                       </motion.div>
-                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-blue-800 dark:text-blue-700 group-hover:text-blue-900 dark:group-hover:text-blue-800 mb-2">Book Marketplace</h3>
-                      <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-600 transition-colors duration-300 mb-3 sm:mb-4">
+                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-blue-800 mb-2">Book Marketplace</h3>
+                      <p className="text-xs sm:text-sm text-gray-800 mb-3 sm:mb-4 font-semibold">
                         Buy, sell, or rent textbooks from fellow students. Find affordable study materials and declutter your bookshelf.
                       </p>
                       <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center mb-3 sm:mb-4">
@@ -356,8 +356,8 @@ export default function Home() {
                       >
                         <CalendarDays className="text-white w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
                       </motion.div>
-                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-purple-800 dark:text-purple-700 group-hover:text-purple-900 dark:group-hover:text-purple-800 mb-2">Campus Events</h3>
-                      <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-600 transition-colors duration-300 mb-3 sm:mb-4">
+                      <h3 className="font-bold text-base sm:text-lg md:text-xl text-purple-800 mb-2">Campus Events</h3>
+                      <p className="text-xs sm:text-sm text-gray-800 mb-3 sm:mb-4 font-semibold">
                         Discover exciting events, workshops, and activities happening around campus. Join clubs and build connections.
                       </p>
                       <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center mb-3 sm:mb-4">
@@ -514,7 +514,7 @@ export default function Home() {
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <Button variant="outline" size="lg" className="text-white border-2 border-white hover:bg-white hover:text-violet-600 shadow-lg font-semibold transition-all duration-300 text-sm sm:text-base px-4 sm:px-6">
+                      <Button size="lg" className="!bg-white !text-black hover:!bg-gray-100 hover:!text-black border-0 shadow-lg !font-bold transition-all duration-300 text-sm sm:text-base px-4 sm:px-6">
                         Browse Items
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
