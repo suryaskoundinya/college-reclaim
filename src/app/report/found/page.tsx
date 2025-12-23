@@ -40,7 +40,8 @@ export default function ReportFound() {
     locationSelect: "",
     customLocation: "",
     location: "",
-    dateFound: ""
+    dateFound: "",
+    timeFound: ""
   })
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -116,7 +117,8 @@ export default function ReportFound() {
         }
       }
       
-      const dateTime = formData.dateFound + 'T00:00:00Z'
+      const timeString = formData.timeFound || '00:00'
+      const dateTime = formData.dateFound + 'T' + timeString + ':00Z'
       const finalLocation = formData.locationSelect === "other" ? formData.customLocation : formData.locationSelect
       
       const response = await fetch('/api/found-items', {
@@ -151,7 +153,8 @@ export default function ReportFound() {
         locationSelect: "",
         customLocation: "",
         location: "",
-        dateFound: ""
+        dateFound: "",
+        timeFound: ""
       })
       setUploadedFiles([])
       
@@ -292,20 +295,35 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   )}
                 </div>
 
-                {/* Date Found */}
-                <div className="space-y-2">
-                  <Label htmlFor="dateFound" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Found *
-                  </Label>
-                  <Input
-                    id="dateFound"
-                    type="date"
-                    value={formData.dateFound}
-                    onChange={(e) => setFormData({...formData, dateFound: e.target.value})}
-                    max={new Date().toISOString().split('T')[0]}
-                    className="h-11"
-                    required
-                  />
+                {/* Date and Time Found */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="dateFound" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Date Found *
+                    </Label>
+                    <Input
+                      id="dateFound"
+                      type="date"
+                      value={formData.dateFound}
+                      onChange={(e) => setFormData({...formData, dateFound: e.target.value})}
+                      max={new Date().toISOString().split('T')[0]}
+                      className="h-11"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="timeFound" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Time Found (Optional)
+                    </Label>
+                    <Input
+                      id="timeFound"
+                      type="time"
+                      value={formData.timeFound}
+                      onChange={(e) => setFormData({...formData, timeFound: e.target.value})}
+                      className="h-11"
+                    />
+                  </div>
                 </div>
 
                 {/* Image Upload */}

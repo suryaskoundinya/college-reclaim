@@ -51,7 +51,6 @@ export default function Search() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300) // 300ms debounce delay
   const [categoryFilter, setCategoryFilter] = useState("ALL")
   const [typeFilter, setTypeFilter] = useState("ALL")
-  const [statusFilter, setStatusFilter] = useState("ACTIVE") // Default to active items
   const [sortBy, setSortBy] = useState("date")
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("grid")
@@ -94,43 +93,49 @@ export default function Search() {
 
   // Combine and transform items for display
   const allItems = useMemo(() => {
-    const transformedLost = lostItems.map(item => ({
-      id: item.id,
-      type: 'lost',
-      title: item.title,
-      description: item.description,
-      category: item.category,
-      location: item.location,
-      date: new Date(item.dateLost).toISOString().split('T')[0],
-      time: new Date(item.dateLost).toTimeString().split(' ')[0].substring(0, 5),
-      reporter: item.user?.name || 'Anonymous',
-      contactEmail: item.user?.email || null,
-      contactPhone: item.user?.phoneNumber || null,
-      imageUrl: item.imageUrl || null,
-      status: item.status,
-      views: 0,
-      contactAttempts: 0,
-      verified: true
-    }))
+    const transformedLost = lostItems.map(item => {
+      const date = new Date(item.dateLost)
+      return {
+        id: item.id,
+        type: 'lost',
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        location: item.location,
+        date: date.toLocaleDateString('en-CA'), // YYYY-MM-DD format in local timezone
+        time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+        reporter: item.user?.name || 'Anonymous',
+        contactEmail: item.user?.email || null,
+        contactPhone: item.user?.phoneNumber || null,
+        imageUrl: item.imageUrl || null,
+        status: item.status,
+        views: 0,
+        contactAttempts: 0,
+        verified: true
+      }
+    })
 
-    const transformedFound = foundItems.map(item => ({
-      id: item.id,
-      type: 'found',
-      title: item.title,
-      description: item.description,
-      category: item.category,
-      location: item.location,
-      date: new Date(item.dateFound).toISOString().split('T')[0],
-      time: new Date(item.dateFound).toTimeString().split(' ')[0].substring(0, 5),
-      reporter: item.user?.name || 'Anonymous',
-      contactEmail: item.user?.email || null,
-      contactPhone: item.user?.phoneNumber || null,
-      imageUrl: item.imageUrl || null,
-      status: item.status,
-      views: 0,
-      contactAttempts: 0,
-      verified: true
-    }))
+    const transformedFound = foundItems.map(item => {
+      const date = new Date(item.dateFound)
+      return {
+        id: item.id,
+        type: 'found',
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        location: item.location,
+        date: date.toLocaleDateString('en-CA'), // YYYY-MM-DD format in local timezone
+        time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+        reporter: item.user?.name || 'Anonymous',
+        contactEmail: item.user?.email || null,
+        contactPhone: item.user?.phoneNumber || null,
+        imageUrl: item.imageUrl || null,
+        status: item.status,
+        views: 0,
+        contactAttempts: 0,
+        verified: true
+      }
+    })
 
     const combined = [...transformedLost, ...transformedFound]
     return combined
@@ -153,11 +158,8 @@ export default function Search() {
       // Type filter (strict match)
       const matchesType = typeFilter === 'ALL' || item.type === typeFilter
       
-      // Status filter (strict match)
-      const matchesStatus = statusFilter === 'ALL' || item.status === statusFilter
-      
       // All filters must match (AND logic)
-      return matchesQuery && matchesCategory && matchesType && matchesStatus
+      return matchesQuery && matchesCategory && matchesType
     }).sort((a, b) => {
       switch (sortBy) {
         case 'date':
@@ -172,7 +174,7 @@ export default function Search() {
     })
 
     return filtered
-  }, [debouncedSearchQuery, categoryFilter, typeFilter, statusFilter, sortBy, allItems])
+  }, [debouncedSearchQuery, categoryFilter, typeFilter, sortBy, allItems])
 
   const handleSearch = () => {
     toast.success(`Found ${filteredItems.length} items matching your criteria`)
@@ -229,7 +231,7 @@ export default function Search() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <div className="sm:col-span-2 lg:col-span-1">
                   <Label htmlFor="search" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Search Items</Label>
                   <Input
@@ -267,20 +269,6 @@ export default function Search() {
                       <SelectItem value="ALL" className="text-sm">📦 All Items</SelectItem>
                       <SelectItem value="lost" className="text-sm">❌ Lost Items</SelectItem>
                       <SelectItem value="found" className="text-sm">✅ Found Items</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="status" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Status</Label>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="mt-1 text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ACTIVE" className="text-sm">🟢 Active</SelectItem>
-                      <SelectItem value="RESOLVED" className="text-sm">✅ Resolved</SelectItem>
-                      <SelectItem value="ALL" className="text-sm">📋 All Status</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -608,7 +596,6 @@ export default function Search() {
                       setSearchQuery('')
                       setCategoryFilter('ALL')
                       setTypeFilter('ALL')
-                      setStatusFilter('ACTIVE')
                     }}
                     variant="outline"
                   >

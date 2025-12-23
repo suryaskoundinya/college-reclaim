@@ -40,7 +40,8 @@ export default function ReportLost() {
     locationSelect: "",
     customLocation: "",
     location: "",
-    dateLost: ""
+    dateLost: "",
+    timeLost: ""
   })
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -116,7 +117,8 @@ export default function ReportLost() {
         }
       }
       
-      const dateTime = formData.dateLost + 'T00:00:00Z'
+      const timeString = formData.timeLost || '00:00'
+      const dateTime = formData.dateLost + 'T' + timeString + ':00Z'
       const finalLocation = formData.locationSelect === "other" ? formData.customLocation : formData.locationSelect
       
       const response = await fetch('/api/lost-items', {
@@ -151,7 +153,8 @@ export default function ReportLost() {
         locationSelect: "",
         customLocation: "",
         location: "",
-        dateLost: ""
+        dateLost: "",
+        timeLost: ""
       })
       setUploadedFiles([])
       
@@ -292,20 +295,35 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   )}
                 </div>
 
-                {/* Date Lost */}
-                <div className="space-y-2">
-                  <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date Lost *
-                  </Label>
-                  <Input
-                    id="dateLost"
-                    type="date"
-                    value={formData.dateLost}
-                    onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
-                    max={new Date().toISOString().split('T')[0]}
-                    className="h-11"
-                    required
-                  />
+                {/* Date and Time Lost */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="dateLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Date Lost *
+                    </Label>
+                    <Input
+                      id="dateLost"
+                      type="date"
+                      value={formData.dateLost}
+                      onChange={(e) => setFormData({...formData, dateLost: e.target.value})}
+                      max={new Date().toISOString().split('T')[0]}
+                      className="h-11"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="timeLost" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Time Lost (Optional)
+                    </Label>
+                    <Input
+                      id="timeLost"
+                      type="time"
+                      value={formData.timeLost}
+                      onChange={(e) => setFormData({...formData, timeLost: e.target.value})}
+                      className="h-11"
+                    />
+                  </div>
                 </div>
 
                 {/* Image Upload */}
