@@ -110,6 +110,7 @@ model LostItem {
   location    String
   dateLost    DateTime
   imageUrl    String?
+  contactPhone String?
   status      ItemStatus @default(LOST)
   userId      String
   createdAt   DateTime   @default(now())
@@ -129,6 +130,7 @@ model FoundItem {
   location    String
   dateFound   DateTime
   imageUrl    String?
+  contactPhone String?
   status      ItemStatus @default(FOUND)
   handedToAdmin Boolean  @default(false)
   userId      String
@@ -225,6 +227,7 @@ model Book {
   priceOrRent  Float
   type         BookType         @default(RENT)
   imageUrl     String?
+  contactPhone String?
   available    Boolean          @default(true)
   ownerUserId  String
   createdAt    DateTime         @default(now())

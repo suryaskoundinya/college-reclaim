@@ -41,7 +41,8 @@ export default function ReportLost() {
     customLocation: "",
     location: "",
     dateLost: "",
-    timeLost: ""
+    timeLost: "",
+    contactPhone: ""
   })
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -132,6 +133,7 @@ export default function ReportLost() {
           category: formData.category,
           location: finalLocation,
           dateLost: dateTime,
+          contactPhone: formData.contactPhone,
           imageUrl: imageUrl,
         }),
       })
@@ -154,7 +156,8 @@ export default function ReportLost() {
         customLocation: "",
         location: "",
         dateLost: "",
-        timeLost: ""
+        timeLost: "",
+        contactPhone: ""
       })
       setUploadedFiles([])
       
@@ -293,6 +296,23 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                       />
                     </div>
                   )}
+                </div>
+
+                {/* Contact Phone */}
+                <div className="space-y-2">
+                  <Label htmlFor="contactPhone" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Contact Phone Number *
+                  </Label>
+                  <Input
+                    id="contactPhone"
+                    type="tel"
+                    placeholder="e.g., +1234567890 or 9876543210"
+                    value={formData.contactPhone}
+                    onChange={(e) => setFormData({...formData, contactPhone: e.target.value})}
+                    className="h-11"
+                    required
+                  />
+                  <p className="text-xs text-gray-500">This number will be displayed so others can contact you</p>
                 </div>
 
                 {/* Date and Time Lost */}

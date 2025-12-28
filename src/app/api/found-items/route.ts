@@ -11,6 +11,7 @@ const foundItemSchema = z.object({
   category: z.enum(['BOOK', 'ELECTRONICS', 'ID_CARD', 'ACCESSORIES', 'CLOTHING', 'KEYS', 'BAGS', 'SPORTS', 'OTHER']),
   location: z.string().min(1, 'Location is required'),
   dateFound: z.string().datetime('Invalid date format'),
+  contactPhone: z.string().optional(),
   handedToAdmin: z.boolean().default(false),
   imageUrl: z.string().optional(),
 })

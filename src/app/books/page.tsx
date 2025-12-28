@@ -21,6 +21,7 @@ interface Book {
   condition: string
   priceOrRent: number
   type: string
+  contactPhone?: string
   imageUrl?: string
   isAvailable: boolean
   createdAt: string
@@ -211,13 +212,13 @@ export default function BooksPage() {
                           <span className="truncate">{book.owner.email}</span>
                         </a>
                       )}
-                      {book.owner.phoneNumber && (
+                      {(book.contactPhone || book.owner.phoneNumber) && (
                         <a
-                          href={`tel:${book.owner.phoneNumber}`}
+                          href={`tel:${book.contactPhone || book.owner.phoneNumber}`}
                           className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:underline transition-colors"
                         >
                           <span className="text-lg">📱</span>
-                          <span>{book.owner.phoneNumber}</span>
+                          <span>{book.contactPhone || book.owner.phoneNumber}</span>
                         </a>
                       )}
                     </div>

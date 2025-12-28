@@ -385,6 +385,21 @@ export default function EventsPage() {
                         </span>
                       </div>
 
+                      {/* Contact Info */}
+                      {event.contactInfo && (
+                        <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                            <span className="font-semibold">Contact:</span>
+                            <a 
+                              href={event.contactInfo.includes('@') ? `mailto:${event.contactInfo}` : `tel:${event.contactInfo}`}
+                              className="text-blue-600 dark:text-blue-400 hover:underline truncate"
+                            >
+                              {event.contactInfo}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
                       {/* View Details Button */}
                       <div className="pt-2">
                         <Link href={`/events/${event.id}`} className="block">

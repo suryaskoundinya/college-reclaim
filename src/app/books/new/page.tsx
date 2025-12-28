@@ -35,7 +35,8 @@ export default function NewBookPage() {
     description: "",
     condition: "",
     priceOrRent: "",
-    type: ""
+    type: "",
+    contactPhone: ""
   })
 
   // Redirect if not authenticated
@@ -149,6 +150,7 @@ export default function NewBookPage() {
         condition: formData.condition,
         priceOrRent: priceValue,
         type: formData.type,
+        contactPhone: formData.contactPhone,
         imageUrl: imageUrl || undefined
       }
 
@@ -255,6 +257,20 @@ export default function NewBookPage() {
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     required
                   />
+                </div>
+
+                {/* Contact Phone */}
+                <div className="space-y-2">
+                  <Label htmlFor="contactPhone">Contact Phone Number *</Label>
+                  <Input
+                    id="contactPhone"
+                    type="tel"
+                    placeholder="e.g., +1234567890 or 9876543210"
+                    value={formData.contactPhone}
+                    onChange={(e) => handleInputChange('contactPhone', e.target.value)}
+                    required
+                  />
+                  <p className="text-xs text-gray-500">This number will be displayed so buyers/renters can contact you</p>
                 </div>
 
                 {/* Type and Price Row */}

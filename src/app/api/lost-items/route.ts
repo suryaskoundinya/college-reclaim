@@ -11,6 +11,7 @@ const lostItemSchema = z.object({
   category: z.enum(['BOOK', 'ELECTRONICS', 'ID_CARD', 'ACCESSORIES', 'CLOTHING', 'KEYS', 'BAGS', 'SPORTS', 'OTHER']),
   location: z.string().min(1, 'Location is required'),
   dateLost: z.string().datetime('Invalid date format'),
+  contactPhone: z.string().optional(),
   imageUrl: z.string().optional(),
 })
 

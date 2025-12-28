@@ -283,15 +283,17 @@ export default function CreateEventPage() {
                 <div className="space-y-2">
                   <Label htmlFor="contactInfo">
                     <Mail className="w-4 h-4 inline mr-2" />
-                    Contact Information
+                    Contact Information *
                   </Label>
                   <Input
                     id="contactInfo"
                     type="text"
+                    required
                     value={formData.contactInfo}
                     onChange={(e) => setFormData({ ...formData, contactInfo: e.target.value })}
-                    placeholder="Email or phone number for inquiries"
+                    placeholder="Phone number or email for inquiries (e.g., +1234567890)"
                   />
+                  <p className="text-xs text-gray-500">This will be displayed so attendees can contact you</p>
                 </div>
 
                 <div className="space-y-2">
