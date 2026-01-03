@@ -49,7 +49,11 @@ export function ImagePreviewModal({ src, alt, isOpen, onClose }: ImagePreviewMod
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                onClose()
+              }
+            }}
             className="absolute inset-0 bg-black/90 cursor-zoom-out"
           />
 
@@ -92,20 +96,29 @@ export function ImagePreviewModal({ src, alt, isOpen, onClose }: ImagePreviewMod
           </div>
 
           {/* Image Container */}
-          <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 flex items-center justify-center p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                onClose()
+              }
+            }}
+          >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", damping: 25 }}
-              className="relative max-w-full max-h-full"
+              className="relative max-w-full max-h-full pointer-events-none"
               style={{ transform: `scale(${zoom})`, transition: 'transform 0.2s ease-out' }}
             >
               <img
                 src={src}
                 alt={alt}
-                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl pointer-events-auto"
+                onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
+                draggable={false}
               />
             </motion.div>
           </div>

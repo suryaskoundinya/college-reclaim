@@ -37,6 +37,19 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model UserSession {
+  id         String    @id @default(cuid())
+  userId     String
+  loginAt    DateTime  @default(now())
+  logoutAt   DateTime?
+  ipAddress  String?
+  userAgent  String?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@map("user_sessions")
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -54,6 +67,7 @@ model User {
 
   accounts     Account[]
   sessions     Session[]
+  userSessions UserSession[]
   lostItems    LostItem[]
   foundItems   FoundItem[]
   notifications Notification[]

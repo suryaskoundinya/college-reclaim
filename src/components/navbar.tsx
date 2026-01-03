@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, Plus, Bell, User, LogOut, Settings, Sparkles, Sun, Moon, BookOpen, CalendarDays, Menu, X, MessageSquare } from "lucide-react"
 import { useTheme } from "@/components/providers"
 import { useState, useEffect } from "react"
+import { trackLogout } from "@/lib/session-tracking"
 
 export function Navbar() {
   const { data: session, status } = useSession()
@@ -44,6 +45,11 @@ export function Navbar() {
     } catch (error) {
       console.error('Error fetching unread count:', error)
     }
+  }
+
+  const handleSignOut = async () => {
+    await trackLogout()
+    await signOut()
   }
 
   return (
@@ -169,7 +175,7 @@ export function Navbar() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button variant="ghost" size="sm" className="relative hover:bg-violet-50 dark:hover:bg-gray-800 hover:text-violet-700 dark:hover:text-violet-400 transition-all duration-200 dark:text-gray-300">
+                    <Button variant="ghost" size="sm" className="relative hover:bg-violet-50 dark:hover:bg-gray-800 hover:text-violet-700 dark:hover:text-violet-400 transition-all duration-200 dark:text-gray-300 hidden md:flex">
                       <Bell className="h-4 w-4" />
                       {unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -183,7 +189,7 @@ export function Navbar() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button variant="ghost" size="sm" className="hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-200 text-gray-700 dark:text-gray-300">
+                    <Button variant="ghost" size="sm" className="hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 transition-all duration-200 text-gray-700 dark:text-gray-300 hidden md:flex">
                       <MessageSquare className="h-4 w-4" />
                     </Button>
                   </motion.div>
@@ -240,7 +246,7 @@ export function Navbar() {
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator className="dark:bg-gray-700" />
-                    <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 cursor-pointer">
+                    <DropdownMenuItem onClick={handleSignOut} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
@@ -355,6 +361,27 @@ export function Navbar() {
               {session && (
                 <>
                   <div className="border-t dark:border-gray-700 my-2"></div>
+                  
+                  <Link href="/notifications" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10 relative">
+                      <Bell className="h-4 w-4 mr-3" />
+                      Notifications
+                      {unreadCount > 0 && (
+                        <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/messages" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start dark:text-gray-300 h-10">
+                      <MessageSquare className="h-4 w-4 mr-3" />
+                      Messages
+                    </Button>
+                  </Link>
+                  
+                  <div className="border-t dark:border-gray-700 my-2"></div>
                   <Link href="/report/lost" prefetch={true} onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full justify-start border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 h-10">
                       <Plus className="h-4 w-4 mr-3" />
@@ -403,7 +430,7 @@ export function Navbar() {
                     className="w-full justify-start text-red-600 dark:text-red-400 h-10"
                     onClick={() => {
                       setMobileMenuOpen(false)
-                      signOut()
+                      handleSignOut()
                     }}
                   >
                     <LogOut className="h-4 w-4 mr-3" />

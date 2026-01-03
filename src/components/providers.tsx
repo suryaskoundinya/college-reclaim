@@ -1,9 +1,10 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider, useSession } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@/components/ui/sonner"
+import { trackLogin } from "@/lib/session-tracking"
 
 type Theme = "light" | "dark"
 
@@ -21,6 +22,23 @@ export function useTheme() {
     throw new Error('useTheme must be used within a ThemeProvider')
   }
   return context
+}
+
+// Session Tracking Component
+function SessionTracker() {
+  const { data: session, status } = useSession()
+  const [hasTracked, setHasTracked] = useState(false)
+
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user && !hasTracked) {
+      trackLogin()
+      setHasTracked(true)
+    } else if (status === 'unauthenticated') {
+      setHasTracked(false)
+    }
+  }, [status, session, hasTracked])
+
+  return null
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -68,6 +86,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       <div className={theme}>
         <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={false}>
+          <SessionTracker />
           <QueryClientProvider client={queryClient}>
             {children}
             <Toaster 
