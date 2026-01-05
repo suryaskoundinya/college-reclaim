@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Coffee, Smartphone, QrCode, ExternalLink, Heart } from "lucide-react"
+import { X, Coffee, Smartphone, QrCode, Heart, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
 interface CoffeeModalProps {
   isOpen: boolean
@@ -16,44 +14,61 @@ const UPI_DETAILS = {
   upiId: "surya1@fam",
   name: "Surya S Koundinya",
   currency: "INR",
-  note: "Buy me a coffee - College Reclaim"
+  note: "Coffee for College Reclaim"
 }
+
+const PRESET_AMOUNTS = [30, 50, 100, 200]
 
 export function CoffeeModal({ isOpen, onClose }: CoffeeModalProps) {
   const [isMobile, setIsMobile] = useState(false)
-  const [customAmount, setCustomAmount] = useState("")
-  const [error, setError] = useState("")
+  const [selectedAmount, setSelectedAmount] = useState<number>(50)
 
   // Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+      const mobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      const touchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+      setIsMobile(mobile || touchDevice)
     }
     checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  // Generate UPI payment link
-  const upiLink = (amount: string) => 
-    `upi://pay?pa=${UPI_DETAILS.upiId}&pn=${encodeURIComponent(UPI_DETAILS.name)}&am=${amount}&cu=${UPI_DETAILS.currency}&tn=${encodeURIComponent(UPI_DETAILS.note)}`
+  // Generate UPI payment link with proper encoding
+  const generateUpiLink = (amount: number) => {
+    const params = new URLSearchParams({
+      pa: UPI_DETAILS.upiId,
+      pn: UPI_DETAILS.name,
+      am: amount.toString(),
+      cu: UPI_DETAILS.currency,
+      tn: UPI_DETAILS.note
+    })
+    return `upi://pay?${params.toString()}`
+  }
 
-  const handlePayment = () => {
-    // Validate amount
-    const amount = parseFloat(customAmount)
-    if (!customAmount || isNaN(amount) || amount <= 0) {
-      setError("Please enter a valid amount greater than 0")
-      return
-    }
-    
-    setError("")
-    
-    // On mobile, directly open UPI app
-    if (isMobile) {
-      window.location.href = upiLink(customAmount)
-    } else {
-      // On desktop, user needs to manually enter the amount when scanning QR
-      // We'll show them the amount they should enter
+  const handlePayment = (amount: number) => {
+    try {
+      const upiLink = generateUpiLink(amount)
+      
+      if (isMobile) {
+        // Create a hidden link and trigger click for better mobile compatibility
+        const link = document.createElement('a')
+        link.href = upiLink
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        
+        // Show success message
+        setTimeout(() => {
+          alert('Opening UPI app... If it doesn\'t open automatically, please install a UPI app like Google Pay, PhonePe, or Paytm.')
+        }, 100)
+      } else {
+        // Desktop - just try to open
+        window.location.href = upiLink
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
+      alert('Failed to open UPI app. Please try again or use the QR code.')
     }
   }
 
@@ -123,45 +138,43 @@ export function CoffeeModal({ isOpen, onClose }: CoffeeModalProps) {
 
           {/* Content */}
           <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-            {/* Custom Amount Input */}
-            <div className="space-y-2">
-              <Label htmlFor="amount" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Enter Amount (₹) *
-              </Label>
-              <Input
-                id="amount"
-                type="number"
-                min="1"
-                step="1"
-                placeholder="e.g., 50, 100, 200..."
-                value={customAmount}
-                onChange={(e) => {
-                  setCustomAmount(e.target.value)
-                  setError("")
-                }}
-                className="text-lg h-12 sm:h-14 text-center font-semibold"
-                required
-              />
-              {error && (
-                <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>
-              )}
-              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-                Enter any amount you'd like to contribute
+            {/* Preset Amount Selection */}
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">
+                Choose Amount
               </p>
+              <div className="grid grid-cols-4 gap-2">
+                {PRESET_AMOUNTS.map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setSelectedAmount(amount)}
+                    className={`
+                      py-3 px-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200
+                      ${selectedAmount === amount
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg scale-105'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }
+                    `}
+                  >
+                    ₹{amount}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Mobile: Direct payment button */}
             {isMobile ? (
               <div className="space-y-4">
                 <Button
-                  onClick={handlePayment}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-5 sm:py-6 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 touch-manipulation"
+                  onClick={() => handlePayment(selectedAmount)}
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
-                  <Smartphone className="w-5 h-5 mr-2" />
-                  Pay ₹{customAmount || "..."} with UPI App
+                  <Smartphone className="w-6 h-6 mr-2" />
+                  Pay ₹{selectedAmount} with UPI
                 </Button>
                 <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-                  Opens Google Pay / PhonePe / Paytm
+                  👆 Tap to open Google Pay / PhonePe / Paytm
                 </p>
               </div>
             ) : (
@@ -184,14 +197,22 @@ export function CoffeeModal({ isOpen, onClose }: CoffeeModalProps) {
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     UPI ID: <span className="font-mono text-violet-600 dark:text-violet-400">{UPI_DETAILS.upiId}</span>
                   </p>
-                  {customAmount && (
-                    <p className="text-base font-bold text-amber-600 dark:text-amber-400">
-                      Enter Amount: ₹{customAmount}
-                    </p>
-                  )}
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Scan the QR code and enter ₹{customAmount || "your amount"} manually
+                  <p className="text-base font-bold text-amber-600 dark:text-amber-400">
+                    Enter Amount: ₹{selectedAmount}
                   </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Scan the QR code and enter ₹{selectedAmount} manually
+                  </p>
+                  
+                  {/* Desktop UPI Link Button */}
+                  <Button
+                    onClick={() => handlePayment(selectedAmount)}
+                    variant="outline"
+                    className="mt-4 w-full"
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Open UPI App (₹{selectedAmount})
+                  </Button>
                 </div>
               </div>
             )}
@@ -210,6 +231,7 @@ export function CoffeeModal({ isOpen, onClose }: CoffeeModalProps) {
                   <p className="text-xs text-blue-900 dark:text-blue-100 leading-relaxed">
                     <strong>Safe & Secure:</strong> Payments are processed directly through your UPI app.
                     No card or login information is stored. Supporting the developer is completely optional.
+                    But greatly appreciated! lol
                   </p>
                 </div>
               </div>
