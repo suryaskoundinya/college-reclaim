@@ -15,7 +15,6 @@ import { Navbar } from "@/components/navbar"
 import { BackButton } from "@/components/ui/back-button"
 import { CheckCircle, MapPin, Upload, X } from "lucide-react"
 import { toast } from "sonner"
-import { locations } from "@/data/locations"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const categories = [
@@ -37,8 +36,6 @@ export default function ReportFound() {
     title: "",
     description: "",
     category: "",
-    locationSelect: "",
-    customLocation: "",
     location: "",
     dateFound: "",
     timeFound: "",
@@ -86,15 +83,14 @@ export default function ReportFound() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validate location
-    const finalLocation = formData.locationSelect === "other" ? formData.customLocation : formData.locationSelect
-    if (!formData.title || !formData.category || !formData.description || !finalLocation || !formData.dateFound) {
+    // Validate fields
+    if (!formData.title || !formData.category || !formData.description || !formData.location || !formData.dateFound) {
       toast.error("Please fill in all required fields")
       return
     }
     
-    if (formData.locationSelect === "other" && !formData.customLocation.trim()) {
-      toast.error("Please specify the location")
+    if (!formData.location.trim()) {
+      toast.error("Please enter the location")
       return
     }
 
@@ -120,7 +116,6 @@ export default function ReportFound() {
       
       const timeString = formData.timeFound || '00:00'
       const dateTime = formData.dateFound + 'T' + timeString + ':00Z'
-      const finalLocation = formData.locationSelect === "other" ? formData.customLocation : formData.locationSelect
       
       const response = await fetch('/api/found-items', {
         method: 'POST',
@@ -131,7 +126,7 @@ export default function ReportFound() {
           title: formData.title,
           description: formData.description,
           category: formData.category,
-          location: finalLocation,
+          location: formData.location,
           dateFound: dateTime,
           contactPhone: formData.contactPhone,
           imageUrl: imageUrl,
@@ -152,8 +147,6 @@ export default function ReportFound() {
         title: "",
         description: "",
         category: "",
-        locationSelect: "",
-        customLocation: "",
         location: "",
         dateFound: "",
         timeFound: "",
@@ -193,7 +186,7 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-2xl">
         <BackButton />
         
         <motion.div
@@ -202,14 +195,14 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
           className="mt-6"
         >
           <Card className="shadow-2xl border-2 border-green-200 dark:border-green-900/30 bg-white dark:bg-gray-900">
-            <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-              <CardTitle className="text-3xl font-bold flex items-center gap-3 text-green-600 dark:text-green-400">
-                <CheckCircle className="h-8 w-8" />
+            <CardHeader className="border-b border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+              <CardTitle className="text-2xl sm:text-3xl font-bold flex items-center gap-2 sm:gap-3 text-green-600 dark:text-green-400">
+                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8" />
                 Report Found Item
               </CardTitle>
             </CardHeader>
             
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Item Name */}
                 <div className="space-y-2">
@@ -264,41 +257,21 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 
                 {/* Location */}
                 <div className="space-y-2">
-                  <Label htmlFor="locationSelect" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="location" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                     Location Where Found *
                   </Label>
-                  <Select 
-                    value={formData.locationSelect} 
-                    onValueChange={(value) => setFormData({...formData, locationSelect: value, customLocation: value !== "other" ? "" : formData.customLocation})}
-                  >
-                    <SelectTrigger className="h-11">
-                      <SelectValue placeholder="Select location" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[300px]">
-                      {locations.map((loc) => (
-                        <SelectItem key={loc.id} value={loc.id}>
-                          {loc.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">
-                    Tip: Choose 'Other' to specify a custom location
-                  </p>
-                  
-                  {formData.locationSelect === "other" && (
-                    <div className="relative mt-3">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="customLocation"
-                        placeholder="Please specify the location"
-                        value={formData.customLocation}
-                        onChange={(e) => setFormData({...formData, customLocation: e.target.value})}
-                        className="pl-10 h-11"
-                        required
-                      />
-                    </div>
-                  )}
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="location"
+                      placeholder="e.g., Main Library, Computer Lab, Cafeteria..."
+                      value={formData.location}
+                      onChange={(e) => setFormData({...formData, location: e.target.value})}
+                      className="pl-10 h-11"
+                      required
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Enter the specific location where you found the item</p>
                 </div>
 
                 {/* Contact Phone */}
@@ -407,7 +380,7 @@ const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                   <Button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-700 dark:to-emerald-700 dark:hover:from-green-800 dark:hover:to-emerald-800 text-white font-semibold text-lg shadow-lg"
+                    className="w-full h-12 sm:h-14 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-700 dark:to-emerald-700 dark:hover:from-green-800 dark:hover:to-emerald-800 text-white font-semibold text-base sm:text-lg shadow-lg touch-manipulation"
                   >
                     {isSubmitting ? (
                       <>

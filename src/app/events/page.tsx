@@ -344,11 +344,11 @@ export default function EventsPage() {
                         <Badge variant="secondary" className="w-fit mb-2">Past Event</Badge>
                       )}
                       
-                      <CardTitle className="text-xl font-bold line-clamp-2 mb-2">
+                      <CardTitle className="text-xl font-bold break-words mb-2">
                         {event.title}
                       </CardTitle>
                       
-                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 break-words whitespace-pre-wrap">
                         {event.description}
                       </p>
                     </CardHeader>
@@ -363,15 +363,15 @@ export default function EventsPage() {
                       </div>
 
                       {/* Location */}
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-red-500 flex-shrink-0" />
-                        <span className="truncate">{event.venue}</span>
+                      <div className="flex items-start gap-2 text-sm">
+                        <MapPin className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                        <span className="break-words flex-1">{event.venue}</span>
                       </div>
 
                       {/* Club/Department */}
-                      <div className="flex items-center gap-2 text-sm">
-                        <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex-shrink-0"></div>
-                        <span className="truncate font-medium">
+                      <div className="flex items-start gap-2 text-sm">
+                        <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex-shrink-0 mt-0.5"></div>
+                        <span className="break-words flex-1 font-medium">
                           {event.clubOrDept}
                         </span>
                       </div>

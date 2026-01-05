@@ -246,14 +246,14 @@ export default function BooksPage() {
                     </div>
                     
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-lg line-clamp-2 text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      <CardTitle className="text-lg break-words text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {book.title}
                       </CardTitle>
                       <p className="text-sm text-gray-600 dark:text-gray-400">by {book.author}</p>
                     </CardHeader>
 
                     <CardContent>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 break-words whitespace-pre-wrap">
                         {book.description}
                       </p>
                       

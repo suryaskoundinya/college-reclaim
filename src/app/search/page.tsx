@@ -434,12 +434,12 @@ export default function Search() {
                           </div>
                         )}
                         
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{item.description}</p>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 break-words whitespace-pre-wrap">{item.description}</p>
                         
                         <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
                           <div className="flex items-start gap-2">
                             <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-violet-500 dark:text-violet-400" />
-                            <span className="line-clamp-1">{item.location}</span>
+                            <span className="break-words flex-1">{item.location}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4 flex-shrink-0 text-violet-500 dark:text-violet-400" />
@@ -520,7 +520,7 @@ export default function Search() {
                               </Badge>
                               <div>
                                 <h3 className="font-semibold text-lg dark:text-gray-100">{item.title}</h3>
-                                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{item.description}</p>
+                                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 break-words whitespace-pre-wrap">{item.description}</p>
                               </div>
                             </div>
                             
